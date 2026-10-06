@@ -21,6 +21,14 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'API en marche' });
 });
 
+// Etape 4: Cours et chapitres
+const courseRoutes = require('./routes/courseRoutes');
+const chapterRoutes = require('./routes/chapterRoutes');
+
+app.use('/api/courses', courseRoutes);
+app.use('/api/chapters', chapterRoutes);
+
+// 
 const dns = require('dns');
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
