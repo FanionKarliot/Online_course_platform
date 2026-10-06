@@ -42,6 +42,13 @@ app.use('/api/upload', uploadRoutes);
 const certificateRoutes = require('./routes/certificateRoutes');
 app.use('/api/certificates', certificateRoutes);
 
+// Etape 8: Commentaire et notification
+const commentRoutes = require('./routes/commentRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+
+app.use('/api/comments', commentRoutes);
+app.use('/api/notifications', notificationRoutes);
+
 // dns
 const dns = require('dns');
 dns.setServers(['8.8.8.8', '8.8.4.4']);
