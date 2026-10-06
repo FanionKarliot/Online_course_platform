@@ -11,6 +11,12 @@ function afficherNavbar() {
         ${
           connecte
             ? `
+              ${user?.role === 'admin' ? `
+                  <a href="/pages/admin-courses.html" class="text-gray-700 hover:text-indigo-600">
+                    <i class="fa-solid fa-user-shield"></i> Admin
+                  </a>
+                ` : ''
+              }
               <a href="/pages/dashboard.html" class="text-gray-700 hover:text-indigo-600">
                 <i class="fa-solid fa-gauge"></i> Tableau de bord
               </a>
