@@ -28,7 +28,11 @@ const chapterRoutes = require('./routes/chapterRoutes');
 app.use('/api/courses', courseRoutes);
 app.use('/api/chapters', chapterRoutes);
 
-// 
+// Etape 5: Inscription à un cours 
+const enrollmentRoutes = require('./routes/enrollmentRoutes');
+app.use('/api/enrollments', enrollmentRoutes);
+
+// dns
 const dns = require('dns');
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
