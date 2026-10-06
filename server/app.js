@@ -32,6 +32,10 @@ app.use('/api/chapters', chapterRoutes);
 const enrollmentRoutes = require('./routes/enrollmentRoutes');
 app.use('/api/enrollments', enrollmentRoutes);
 
+// Etape 6: Gestion des quiz
+const quizRoutes = require('./routes/quizRoutes');
+app.use('/api/quizzes', quizRoutes);
+
 // dns
 const dns = require('dns');
 dns.setServers(['8.8.8.8', '8.8.4.4']);
