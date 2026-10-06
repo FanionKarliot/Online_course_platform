@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Détail du cours</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body class="min-h-screen">
+    <div id="navbar"></div>
+
+    <main class="max-w-5xl mx-auto px-6 py-8">
+      <div id="chargement" class="flex justify-center py-20">
+        <div class="spinner"></div>
+      </div>
+
+      <div id="contenu" class="hidden">
+        <!-- En-tête du cours -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <span
+            id="cours-categorie"
+            class="text-xs font-medium text-indigo-600 uppercase"
+          ></span>
+          <h1
+            id="cours-titre"
+            class="text-2xl font-bold text-gray-800 mt-1 mb-2"
+          ></h1>
+          <p id="cours-description" class="text-gray-600 mb-4"></p>
+          <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
+            <span
+              ><i class="fa-solid fa-chalkboard-user"></i>
+              <span id="cours-enseignant"></span
+            ></span>
+            <span
+              id="cours-niveau"
+              class="bg-gray-100 px-2 py-1 rounded-full"
+            ></span>
+          </div>
+
+          <!-- Barre de progression (visible seulement si inscrit) -->
+          <div id="bloc-progression" class="hidden mb-4">
+            <div class="flex justify-between text-sm text-gray-600 mb-1">
+              <span>Progression</span>
+              <span id="texte-progression">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                id="barre-progression"
+                class="bg-indigo-600 h-2.5 rounded-full transition-all"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+
+          <button
+            id="btn-inscription"
+            class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition"
+          >
+            <i class="fa-solid fa-plus"></i> S'inscrire au cours
+          </button>
+
+          <a
+            id="btn-certificat"
+            href="#"
+            target="_blank"
+            class="hidden bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
+          >
+            <i class="fa-solid fa-certificate"></i> Télécharger le certificat
+          </a>
+        </div>
+
+        <!-- Liste des chapitres -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <h2 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fa-solid fa-list"></i> Chapitres
+          </h2>
+          <div id="liste-chapitres" class="space-y-3"></div>
+        </div>
+
+        <!-- Quiz du cours -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <h2 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fa-solid fa-circle-question"></i> Quiz
+          </h2>
+          <div id="liste-quiz" class="space-y-3"></div>
+        </div>
+
+        <!-- Commentaires -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h2 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fa-solid fa-comments"></i> Commentaires
+          </h2>
+          <form id="form-commentaire" class="hidden flex gap-2 mb-4">
+            <input
+              id="texte-commentaire"
+              type="text"
+              placeholder="Votre commentaire..."
+              class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <button
+              type="submit"
+              class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+            >
+              Envoyer
+            </button>
+          </form>
+          <div id="liste-commentaires" class="space-y-3"></div>
+        </div>
+      </div>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/course-detail.js"></script>
+    <script>
+      afficherNavbar();
+    </script>
+  </body>
+</html>
