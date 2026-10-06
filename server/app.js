@@ -8,6 +8,12 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+const authRoutes = require('./routes/authRoutes');
+const errorHandler = require('./middlewares/errorHandler');
+
+app.use('/api/auth', authRoutes);
+
 app.use(express.static(path.join(__dirname, '../client')));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
@@ -21,4 +27,5 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 const PORT = process.env.PORT || 3000;
 connectDB().then(() => {
   app.listen(PORT, () => console.log(`Serveur sur http://localhost:${PORT}`));
+  app.use(errorHandler);
 });
