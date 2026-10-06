@@ -36,6 +36,12 @@ app.use('/api/enrollments', enrollmentRoutes);
 const quizRoutes = require('./routes/quizRoutes');
 app.use('/api/quizzes', quizRoutes);
 
+// Etape 7: Gestion des fichiers (PDF, images) et certificat
+const uploadRoutes = require('./routes/uploadRoutes');
+app.use('/api/upload', uploadRoutes);
+const certificateRoutes = require('./routes/certificateRoutes');
+app.use('/api/certificates', certificateRoutes);
+
 // dns
 const dns = require('dns');
 dns.setServers(['8.8.8.8', '8.8.4.4']);
