@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body class="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div class="bg-white shadow-md rounded-xl p-8 w-full max-w-md">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+        <i class="fa-solid fa-graduation-cap text-indigo-600"></i> Connexion
+      </h1>
+
+      <div
+        id="erreur"
+        class="hidden bg-red-50 text-red-600 text-sm rounded-lg px-4 py-2 mb-4"
+      ></div>
+
+      <form id="form-login" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Email</label
+          >
+          <input
+            type="email"
+            id="email"
+            required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Mot de passe</label
+          >
+          <input
+            type="password"
+            id="motDePasse"
+            required
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+        <button
+          type="submit"
+          id="btn-submit"
+          class="w-full bg-indigo-600 text-white rounded-lg py-2 font-medium hover:bg-indigo-700 transition"
+        >
+          Se connecter
+        </button>
+      </form>
+
+      <p class="text-sm text-gray-500 text-center mt-4">
+        Pas encore de compte ?
+        <a href="/pages/register.html" class="text-indigo-600 hover:underline"
+          >S'inscrire</a
+        >
+      </p>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+      document
+        .getElementById("form-login")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("btn-submit");
+          const erreurDiv = document.getElementById("erreur");
+          erreurDiv.classList.add("hidden");
+
+          const email = document.getElementById("email").value;
+          const motDePasse = document.getElementById("motDePasse").value;
+
+          btn.disabled = true;
+          btn.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Connexion...';
+
+          try {
+            const { token, user } = await api.login({ email, motDePasse });
+            sauvegarderSession(token, user);
+            window.location.href = "/index.html";
+          } catch (err) {
+            erreurDiv.textContent = err.message;
+            erreurDiv.classList.remove("hidden");
+            btn.disabled = false;
+            btn.textContent = "Se connecter";
+          }
+        });
+
+      // Si déjà connecté, pas besoin de repasser par ici
+      if (estConnecte()) window.location.href = "/index.html";
+    </script>
+  </body>
+</html>
