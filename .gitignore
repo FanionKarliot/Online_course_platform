@@ -4,3 +4,4 @@ uploads/*
 !uploads/.gitkeep
 # Dossier de notes personnelles
 notes/
+.postman/
