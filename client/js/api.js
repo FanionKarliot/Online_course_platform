@@ -54,4 +54,27 @@ const api = {
   // Notifications
   getNotifications: () => apiFetch('/notifications'),
   markAllRead: () => apiFetch('/notifications/tout-lire', { method: 'PATCH' }),
+
+  // / Utilisateurs (admin)
+  getUsers: () => apiFetch('/users'),
+  updateUserRole: (id, role) =>
+    apiFetch(`/users/${id}/role`, { method: 'PATCH', body: JSON.stringify({ role }) }),
+  deleteUser: (id) => apiFetch(`/users/${id}`, { method: 'DELETE' }),
+
+    // Cours (admin)
+  createCourse: (body) => apiFetch('/courses', { method: 'POST', body: JSON.stringify(body) }),
+  updateCourse: (id, body) => apiFetch(`/courses/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  deleteCourse: (id) => apiFetch(`/courses/${id}`, { method: 'DELETE' }),
+
+  // Chapitres (admin)
+  addChapter: (coursId, body) =>
+    apiFetch(`/courses/${coursId}/chapters`, { method: 'POST', body: JSON.stringify(body) }),
+  updateChapter: (id, body) => apiFetch(`/chapters/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  deleteChapter: (id) => apiFetch(`/chapters/${id}`, { method: 'DELETE' }),
+
+  // Quiz (admin)
+  createQuiz: (body) => apiFetch('/quizzes', { method: 'POST', body: JSON.stringify(body) }),
+  getQuizAdmin: (id) => apiFetch(`/quizzes/${id}/admin`),
+  updateQuiz: (id, body) => apiFetch(`/quizzes/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  deleteQuiz: (id) => apiFetch(`/quizzes/${id}`, { method: 'DELETE' }),
 };

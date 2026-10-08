@@ -11,7 +11,7 @@
 <body class="min-h-screen">
   <div id="navbar"></div>
 
-  <main class="max-w-5xl mx-auto px-6 py-8">
+  <main class="max-w-4xl mx-auto px-6 py-8">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-gray-800">
         <i class="fa-solid fa-user-shield text-indigo-600"></i> Administration des cours
@@ -24,7 +24,7 @@
     <div id="liste-cours-admin" class="space-y-3"></div>
   </main>
 
-  <!-- Modale : créer/modifier un cours -->
+  <!-- Modale : créer/modifier les infos générales d'un cours -->
   <div id="modale-cours" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
       <h2 id="modale-titre" class="text-lg font-bold text-gray-800 mb-4">Nouveau cours</h2>
@@ -61,29 +61,6 @@
           <button type="button" id="btn-annuler" class="flex-1 bg-gray-100 text-gray-700 rounded-lg py-2 hover:bg-gray-200">Annuler</button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <!-- Modale : gérer chapitres + quiz d'un cours -->
-  <div id="modale-gestion" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-      <h2 id="gestion-titre" class="text-lg font-bold text-gray-800 mb-4"></h2>
-
-      <h3 class="font-medium text-gray-700 mb-2"><i class="fa-solid fa-list"></i> Chapitres</h3>
-      <div id="gestion-chapitres" class="space-y-2 mb-3"></div>
-      <form id="form-chapitre" class="flex gap-2 mb-6">
-        <input type="text" id="input-chapitre-titre" placeholder="Titre du chapitre" required class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-        <input type="url" id="input-chapitre-video" placeholder="URL vidéo (optionnel)" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-        <button type="submit" class="bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm"><i class="fa-solid fa-plus"></i></button>
-      </form>
-
-      <h3 class="font-medium text-gray-700 mb-2"><i class="fa-solid fa-circle-question"></i> Quiz</h3>
-      <div id="gestion-quiz" class="space-y-2 mb-3"></div>
-      <button id="btn-nouveau-quiz" type="button" class="text-sm text-indigo-600 hover:underline mb-4">
-        <i class="fa-solid fa-plus"></i> Ajouter un quiz (3 questions à choix multiple)
-      </button>
-
-      <button id="btn-fermer-gestion" class="w-full bg-gray-100 text-gray-700 rounded-lg py-2 hover:bg-gray-200">Fermer</button>
     </div>
   </div>
 

@@ -1,5 +1,6 @@
 const coursId = new URLSearchParams(window.location.search).get('id');
 let inscriptionActuelle = null;
+// if (!coursId) window.location.href = '/index.html';
 
 function afficherChapitre(chapitre, estTermine) {
   return `
@@ -146,7 +147,8 @@ async function chargerPage() {
     document.getElementById('chargement').classList.add('hidden');
     document.getElementById('contenu').classList.remove('hidden');
   } catch (err) {
-    document.getElementById('chargement').innerHTML = `<p class="text-red-500">${err.message}</p>`;
+    // document.getElementById('chargement').innerHTML = `<p class="text-red-500">${err.message}</p>`;
+    window.location.href = '/index.html';
   }
 }
 

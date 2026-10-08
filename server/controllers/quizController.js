@@ -120,3 +120,51 @@ exports.getMesResultats = async (req, res, next) => {
     next(err);
   }
 };
+
+// GET /api/quizzes/:id/admin  (admin — avec les bonnes réponses, pour édition)
+exports.getQuizByIdAdmin = async (req, res, next) => {
+  try {
+    const quiz = await Quiz.findById(req.params.id);
+    if (!quiz) return res.status(404).json({ message: 'Quiz introuvable' });
+    res.json({ quiz });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// PUT /api/quizzes/:id  (admin)
+exports.updateQuiz = async (req, res, next) => {
+  try {
+    const { titre, noteMinimale, questions } = req.body;
+
+    if (questions) {
+      for (const q of questions) {
+        if (!q.enonce || !q.options || q.options.length < 2 || q.bonneReponse === undefined) {
+          return res.status(400).json({ message: 'Chaque question doit avoir un énoncé, au moins 2 options et une bonne réponse' });
+        }
+      }
+    }
+
+    const quiz = await Quiz.findByIdAndUpdate(
+      req.params.id,
+      { titre, noteMinimale, questions },
+      { new: true, runValidators: true }
+    );
+    if (!quiz) return res.status(404).json({ message: 'Quiz introuvable' });
+    res.json({ quiz });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// DELETE /api/quizzes/:id  (admin)
+exports.deleteQuiz = async (req, res, next) => {
+  try {
+    const quiz = await Quiz.findByIdAndDelete(req.params.id);
+    if (!quiz) return res.status(404).json({ message: 'Quiz introuvable' });
+    await Result.deleteMany({ quiz: quiz._id }); // nettoyage des résultats liés
+    res.json({ message: 'Quiz supprimé' });
+  } catch (err) {
+    next(err);
+  }
+};

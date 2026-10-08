@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administration — Utilisateurs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body class="min-h-screen">
+    <div id="navbar"></div>
+
+    <main class="max-w-4xl mx-auto px-6 py-8">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+          <i class="fa-solid fa-users text-indigo-600"></i> Gestion des
+          utilisateurs
+        </h1>
+        <a
+          href="/pages/admin-courses.html"
+          class="text-sm text-indigo-600 hover:underline"
+        >
+          <i class="fa-solid fa-arrow-left"></i> Retour aux cours
+        </a>
+      </div>
+
+      <div class="flex gap-3 mb-6">
+        <input
+          id="recherche-utilisateur"
+          type="text"
+          placeholder="Rechercher par nom ou email..."
+          class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <select
+          id="filtre-role"
+          class="border border-gray-300 rounded-lg px-4 py-2"
+        >
+          <option value="">Tous les rôles</option>
+          <option value="etudiant">Étudiant</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <p id="compteur-utilisateurs" class="text-sm text-gray-500 mb-3"></p>
+
+      <div
+        id="liste-utilisateurs"
+        class="bg-white rounded-xl shadow-sm divide-y divide-gray-100"
+      ></div>
+
+      <div
+        id="liste-utilisateurs"
+        class="bg-white rounded-xl shadow-sm divide-y divide-gray-100"
+      ></div>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/admin-users.js"></script>
+    <script>
+      exigerAdmin();
+      afficherNavbar();
+    </script>
+  </body>
+</html>

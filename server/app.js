@@ -46,6 +46,10 @@ app.use('/api/certificates', certificateRoutes);
 const commentRoutes = require('./routes/commentRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 
+// Etape 9: Gestion des utilisateurs (admin uniquement)
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
+
 app.use('/api/comments', commentRoutes);
 app.use('/api/notifications', notificationRoutes);
 

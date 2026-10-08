@@ -14,25 +14,28 @@
   <body class="min-h-screen">
     <div id="navbar"></div>
 
-    <main class="max-w-6xl mx-auto px-6 py-8">
-      <h1 class="text-3xl font-bold text-gray-800 mb-6">Catalogue des cours</h1>
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-6">
+        Catalogue des cours
+      </h1>
 
-      <div class="flex gap-4 mb-6">
+      <!-- Barre de filtres -->
+      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
         <input
           id="recherche"
           type="text"
           placeholder="Rechercher un cours..."
-          class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="w-full sm:flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <select
           id="filtre-categorie"
-          class="border border-gray-300 rounded-lg px-4 py-2"
+          class="w-full sm:w-auto border border-gray-300 rounded-lg px-4 py-2"
         >
           <option value="">Toutes catégories</option>
         </select>
         <select
           id="filtre-niveau"
-          class="border border-gray-300 rounded-lg px-4 py-2"
+          class="w-full sm:w-auto border border-gray-300 rounded-lg px-4 py-2"
         >
           <option value="">Tous niveaux</option>
           <option value="debutant">Débutant</option>
@@ -41,7 +44,11 @@
         </select>
       </div>
 
-      <div id="liste-cours" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Grille de cours -->
+      <div
+        id="liste-cours"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+      >
         <!-- Les cartes de cours seront injectées ici par home.js -->
       </div>
     </main>
