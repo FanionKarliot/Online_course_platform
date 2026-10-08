@@ -148,7 +148,7 @@ async function chargerPage() {
     document.getElementById('contenu').classList.remove('hidden');
   } catch (err) {
     // document.getElementById('chargement').innerHTML = `<p class="text-red-500">${err.message}</p>`;
-    window.location.href = '/index.html';
+    window.location.href = '/pages/login.html';
   }
 }
 

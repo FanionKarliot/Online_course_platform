@@ -25,6 +25,9 @@ function afficherNavbar() {
               <a href="/index.html" class="text-gray-700 hover:text-indigo-600">
                 <i class="fa-solid fa-house"></i> Accueil
               </a>
+              <a href="/pages/courses.html" class="text-gray-700 hover:text-indigo-600">
+                <i class="fa-solid fa-book-open"></i> Cours
+              </a>
               <a href="/pages/dashboard.html" class="text-gray-700 hover:text-indigo-600">
                 <i class="fa-solid fa-gauge"></i> Tableau de bord
               </a>
@@ -60,6 +63,7 @@ function afficherNavbar() {
     ? `
       <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex items-stretch z-40">
         ${itemBas('/index.html', 'fa-house', pageActuelle === '/index.html')}
+        ${itemBas('/pages/courses.html', 'fa-book-open', pageActuelle.includes('courses.html'))}
         ${itemBas('/pages/dashboard.html', 'fa-gauge', pageActuelle.includes('dashboard'))}
         ${itemBas('/pages/dashboard.html?onglet=notifications', 'fa-bell', false, 'badge-notif-bas')}
         ${user?.role === 'admin' ? itemBas('/pages/admin-courses.html', 'fa-user-shield', pageActuelle.includes('admin')) : ''}
