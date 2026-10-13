@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoursEnLigne — Apprenez à votre rythme</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes floatSlow {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-12px); }
+      }
+      @keyframes pulseSoft {
+        0%, 100% { opacity: 0.6; }
+        50%      { opacity: 1; }
+      }
+      .anim-fade-up { animation: fadeInUp 0.7s ease-out both; }
+      .anim-delay-1 { animation-delay: 0.1s; }
+      .anim-delay-2 { animation-delay: 0.2s; }
+      .anim-delay-3 { animation-delay: 0.3s; }
+      .anim-delay-4 { animation-delay: 0.4s; }
+
+      .blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.45;
+        pointer-events: none;
+      }
+
+      .float-slow { animation: floatSlow 6s ease-in-out infinite; }
+
+      /* Carte cours hover */
+      .carte-cours {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+      .carte-cours:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -12px rgba(79, 70, 229, 0.18);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div id="navbar"></div>
+
+    <!-- ============================================================= -->
+    <!-- HERO                                                          -->
+    <!-- ============================================================= -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-700 text-white">
+
+      <!-- Blobs décoratifs -->
+      <div class="blob w-96 h-96 bg-violet-400 -top-20 -left-20" style="animation: pulseSoft 5s ease-in-out infinite;"></div>
+      <div class="blob w-80 h-80 bg-indigo-300 top-1/2 -right-20"></div>
+      <div class="blob w-72 h-72 bg-fuchsia-400 bottom-0 left-1/3" style="animation: pulseSoft 7s ease-in-out infinite;"></div>
+
+      <!-- Motif grille en overlay -->
+      <div class="absolute inset-0 opacity-[0.06]"
+           style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+      <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-32 text-center">
+
+        <!-- Badge -->
+        <div class="anim-fade-up inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 text-sm px-4 py-1.5 rounded-full mb-6">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Plateforme d'apprentissage en ligne</span>
+          <span class="flex h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        </div>
+
+        <!-- Titre -->
+        <h1 class="anim-fade-up anim-delay-1 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
+          Apprenez à votre rythme,
+          <br />
+          <span class="bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-200 bg-clip-text text-transparent">
+            où que vous soyez
+          </span>
+        </h1>
+
+        <!-- Sous-titre -->
+        <p class="anim-fade-up anim-delay-2 text-base sm:text-lg md:text-xl text-indigo-100/90 max-w-2xl mx-auto mb-10 leading-relaxed">
+          Des cours structurés en chapitres, des quiz corrigés automatiquement
+          et un certificat de réussite à la clé.
+        </p>
+
+        <!-- Boutons -->
+        <div class="anim-fade-up anim-delay-3 flex flex-col sm:flex-row gap-3 justify-center items-center">
+          <a
+            href="/pages/courses.html"
+            class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-indigo-700 font-semibold px-7 py-3.5 rounded-xl
+                   hover:bg-indigo-50 hover:shadow-xl hover:shadow-black/10
+                   transition-all duration-200"
+          >
+            <i class="fa-solid fa-book-open transition-transform duration-200 group-hover:scale-110"></i>
+            <span>Découvrir les cours</span>
+            <i class="fa-solid fa-arrow-right text-xs opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200"></i>
+          </a>
+          <a
+            id="hero-cta-secondaire"
+            href="/pages/register.html"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-white/40 backdrop-blur-sm text-white font-semibold px-7 py-3.5 rounded-xl
+                   hover:bg-white/10 hover:border-white/60 transition-all duration-200"
+          >
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Créer un compte gratuit</span>
+          </a>
+        </div>
+
+        <!-- Preuve sociale rapide -->
+        <div class="anim-fade-up anim-delay-4 mt-10 flex items-center justify-center gap-3 text-sm text-indigo-200/80">
+          <div class="flex -space-x-2">
+            <span class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-300 to-orange-400 border-2 border-indigo-700"></span>
+            <span class="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-300 to-teal-400 border-2 border-indigo-700"></span>
+            <span class="w-7 h-7 rounded-full bg-gradient-to-br from-pink-300 to-rose-400 border-2 border-indigo-700"></span>
+            <span class="w-7 h-7 rounded-full bg-white/20 border-2 border-indigo-700 flex items-center justify-center text-[10px] font-bold">+</span>
+          </div>
+          <span>Rejoignez des centaines d'étudiants</span>
+        </div>
+      </div>
+
+      <!-- Vague en bas -->
+      <div class="absolute bottom-0 left-0 right-0 leading-none">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" class="w-full h-12 block">
+          <path fill="#f9fafb" d="M0,32 C240,60 480,0 720,20 C960,40 1200,50 1440,30 L1440,60 L0,60 Z"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- CHIFFRES CLÉS                                                 -->
+    <!-- ============================================================= -->
+    <section class="max-w-5xl mx-auto px-4 sm:px-6 -mt-14 relative z-10">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+
+        <div class="bg-white rounded-2xl shadow-lg shadow-indigo-500/5 border border-gray-100 p-6 text-center
+                    hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300">
+          <div class="w-11 h-11 mx-auto mb-3 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <i class="fa-solid fa-book"></i>
+          </div>
+          <p id="chiffre-cours" class="text-3xl sm:text-4xl font-bold text-gray-900">—</p>
+          <p class="text-sm text-gray-500 mt-1">Cours disponibles</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg shadow-violet-500/5 border border-gray-100 p-6 text-center
+                    hover:shadow-xl hover:shadow-violet-500/10 transition-all duration-300">
+          <div class="w-11 h-11 mx-auto mb-3 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <p id="chiffre-categories" class="text-3xl sm:text-4xl font-bold text-gray-900">—</p>
+          <p class="text-sm text-gray-500 mt-1">Catégories</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg shadow-amber-500/5 border border-gray-100 p-6 text-center col-span-2 md:col-span-1
+                    hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-300">
+          <div class="w-11 h-11 mx-auto mb-3 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center float-slow">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <p class="text-3xl sm:text-4xl font-bold text-gray-900">100%</p>
+          <p class="text-sm text-gray-500 mt-1">Certificat à la fin de chaque cours</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- ATOUTS                                                        -->
+    <!-- ============================================================= -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
+      <div class="text-center mb-12">
+        <span class="inline-block text-xs font-semibold tracking-widest text-indigo-600 uppercase mb-3">
+          Avantages
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+          Pourquoi CoursEnLigne ?
+        </h2>
+        <p class="text-gray-500 max-w-xl mx-auto">
+          Tout ce qu'il faut pour apprendre efficacement.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div class="group bg-white rounded-2xl border border-gray-100 p-7
+                    hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/5
+                    transition-all duration-300">
+          <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-xl flex items-center justify-center text-xl mb-5
+                      shadow-md shadow-indigo-500/20 group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2 text-lg">Cours structurés</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            Chapitres progressifs, vidéos et supports PDF pour avancer pas à pas.
+          </p>
+        </div>
+
+        <div class="group bg-white rounded-2xl border border-gray-100 p-7
+                    hover:border-amber-200 hover:shadow-xl hover:shadow-amber-500/5
+                    transition-all duration-300">
+          <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-500 text-white rounded-xl flex items-center justify-center text-xl mb-5
+                      shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-circle-question"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2 text-lg">Quiz interactifs</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            Évaluez vos connaissances avec une correction automatique et détaillée.
+          </p>
+        </div>
+
+        <div class="group bg-white rounded-2xl border border-gray-100 p-7
+                    hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/5
+                    transition-all duration-300">
+          <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-500 text-white rounded-xl flex items-center justify-center text-xl mb-5
+                      shadow-md shadow-emerald-500/20 group-hover:scale-110 transition-transform duration-300">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2 text-lg">Suivi de progression</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">
+            Un tableau de bord personnel avec votre avancement et vos résultats.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- COMMENT ÇA MARCHE                                             -->
+    <!-- ============================================================= -->
+    <section class="relative bg-white py-20 sm:py-24 overflow-hidden">
+      <div class="blob w-72 h-72 bg-indigo-200 -top-20 -right-20" style="opacity:0.25"></div>
+      <div class="blob w-72 h-72 bg-violet-200 bottom-0 -left-20" style="opacity:0.25"></div>
+
+      <div class="relative max-w-5xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-14">
+          <span class="inline-block text-xs font-semibold tracking-widest text-violet-600 uppercase mb-3">
+            Étapes
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+            Comment ça marche ?
+          </h2>
+          <p class="text-gray-500 max-w-xl mx-auto">
+            Quatre étapes simples pour obtenir votre certificat.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+
+          <div class="relative text-center group">
+            <div class="relative inline-flex items-center justify-center w-16 h-16 mb-4">
+              <span class="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 rotate-6
+                           group-hover:rotate-12 transition-transform duration-300"></span>
+              <span class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600
+                           flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-500/25">
+                1
+              </span>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1.5">Inscrivez-vous</h3>
+            <p class="text-sm text-gray-500">Créez votre compte en quelques secondes.</p>
+          </div>
+
+          <div class="relative text-center group">
+            <div class="relative inline-flex items-center justify-center w-16 h-16 mb-4">
+              <span class="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 rotate-6
+                           group-hover:rotate-12 transition-transform duration-300"></span>
+              <span class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600
+                           flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-500/25">
+                2
+              </span>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1.5">Choisissez un cours</h3>
+            <p class="text-sm text-gray-500">Parcourez le catalogue et rejoignez un cours.</p>
+          </div>
+
+          <div class="relative text-center group">
+            <div class="relative inline-flex items-center justify-center w-16 h-16 mb-4">
+              <span class="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 rotate-6
+                           group-hover:rotate-12 transition-transform duration-300"></span>
+              <span class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600
+                           flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-500/25">
+                3
+              </span>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1.5">Progressez</h3>
+            <p class="text-sm text-gray-500">Suivez les chapitres et passez les quiz.</p>
+          </div>
+
+          <div class="relative text-center group">
+            <div class="relative inline-flex items-center justify-center w-16 h-16 mb-4">
+              <span class="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 rotate-6
+                           group-hover:rotate-12 transition-transform duration-300"></span>
+              <span class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600
+                           flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-500/25">
+                4
+              </span>
+            </div>
+            <h3 class="font-semibold text-gray-900 mb-1.5">Obtenez votre certificat</h3>
+            <p class="text-sm text-gray-500">Téléchargez-le dès la fin du cours.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- COURS À LA UNE                                                -->
+    <!-- ============================================================= -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+        <div>
+          <span class="inline-block text-xs font-semibold tracking-widest text-indigo-600 uppercase mb-2">
+            Sélection
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Cours à la une</h2>
+        </div>
+        <a href="/pages/courses.html"
+           class="group inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium">
+          Voir tout le catalogue
+          <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform duration-200"></i>
+        </a>
+      </div>
+
+      <div id="cours-une" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- APPEL À L'ACTION FINAL                                        -->
+    <!-- ============================================================= -->
+    <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
+      <div class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 rounded-3xl p-10 sm:p-14 text-center text-white
+                  shadow-2xl shadow-indigo-500/20">
+
+        <!-- Blobs -->
+        <div class="blob w-72 h-72 bg-violet-400 -top-20 -right-10" style="opacity:0.5"></div>
+        <div class="blob w-72 h-72 bg-fuchsia-400 -bottom-20 -left-10" style="opacity:0.4"></div>
+
+        <!-- Cercles décoratifs -->
+        <div class="absolute top-6 right-6 w-24 h-24 border-2 border-white/10 rounded-full"></div>
+        <div class="absolute bottom-6 left-6 w-32 h-32 border-2 border-white/10 rounded-full"></div>
+
+        <div class="relative">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            Prêt à commencer votre parcours ?
+          </h2>
+          <p class="text-indigo-100 mb-8 max-w-xl mx-auto leading-relaxed">
+            Rejoignez la plateforme et lancez votre premier cours dès aujourd'hui.
+            Aucune carte bancaire requise.
+          </p>
+          <a
+            id="cta-final"
+            href="/pages/register.html"
+            class="group inline-flex items-center gap-2 bg-white text-indigo-700 font-semibold px-8 py-3.5 rounded-xl
+                   hover:bg-indigo-50 hover:shadow-xl hover:shadow-black/10
+                   transition-all duration-200"
+          >
+            <i class="fa-solid fa-rocket transition-transform duration-200 group-hover:-translate-y-0.5"></i>
+            <span>Commencer maintenant</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- FOOTER                                                        -->
+    <!-- ============================================================= -->
+    <footer class="border-t border-gray-200 bg-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+            <i class="fa-solid fa-graduation-cap text-sm"></i>
+          </span>
+          <span class="font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+            CoursEnLigne
+          </span>
+        </div>
+
+        <p class="text-xs text-gray-400 text-center sm:text-right">
+          Projet de fin de semestre — Programmation JavaScript<br class="sm:hidden" />
+          <span class="hidden sm:inline"> • </span>Fanion Karliot 767
+        </p>
+      </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/landing.js"></script>
+    <script>
+      afficherNavbar();
+    </script>
+  </body>
+</html>

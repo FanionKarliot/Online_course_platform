@@ -9,6 +9,12 @@ const courseSchema = new mongoose.Schema(
     image: { type: String, default: '' },
     enseignant: { type: String, required: true, trim: true },
     publie: { type: Boolean, default: true },
+    supports: [
+      {
+        titre: { type: String, required: true, trim: true },
+        url: { type: String, required: true },
+      },
+    ],
   },
   { timestamps: true }
 );

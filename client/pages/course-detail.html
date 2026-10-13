@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Détail du cours — CoursEnLigne</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .anim-fade-up { animation: fadeInUp 0.5s ease-out both; }
+      .anim-delay-1 { animation-delay: 0.08s; }
+      .anim-delay-2 { animation-delay: 0.16s; }
+      .anim-delay-3 { animation-delay: 0.24s; }
+
+      .blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.35;
+        pointer-events: none;
+      }
+
+      /* Cartes génériques */
+      .carte {
+        background: #fff;
+        border: 1px solid #f1f5f9;
+        border-radius: 1rem;
+        transition: box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+      .carte:hover {
+        border-color: #e2e8f0;
+        box-shadow: 0 8px 24px -8px rgba(15, 23, 42, 0.08);
+      }
+
+      /* Élément de chapitre / support / quiz */
+      .item-liste {
+        transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+      }
+      .item-liste:hover {
+        border-color: #c7d2fe;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div id="navbar"></div>
+
+    <!-- ============================================================= -->
+    <!-- EN-TÊTE DÉGRADÉ                                               -->
+    <!-- ============================================================= -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 text-white">
+      <div class="blob w-80 h-80 bg-violet-400 -top-20 -left-20"></div>
+      <div class="blob w-72 h-72 bg-indigo-300 top-1/2 -right-16"></div>
+      <div class="absolute inset-0 opacity-[0.07]"
+           style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+      <div class="relative max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+        <!-- Breadcrumb + retour -->
+        <nav class="anim-fade-up flex items-center gap-2 text-xs text-indigo-100/80 mb-5">
+          <a href="/index.html" class="hover:text-white transition-colors">Accueil</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <a href="/pages/courses.html" class="hover:text-white transition-colors">Catalogue</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span class="text-white font-medium truncate max-w-[180px] sm:max-w-none">Détail du cours</span>
+        </nav>
+
+        <a
+          href="/pages/courses.html"
+          class="anim-fade-up inline-flex items-center gap-2 text-sm text-indigo-100/90 hover:text-white
+                 bg-white/10 backdrop-blur-sm border border-white/15
+                 px-3.5 py-2 rounded-xl transition-all duration-200 mb-5"
+        >
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          <span>Retour au catalogue</span>
+        </a>
+      </div>
+
+      <!-- Vague bas -->
+      <div class="absolute bottom-0 left-0 right-0 leading-none">
+        <svg viewBox="0 0 1440 40" preserveAspectRatio="none" class="w-full h-8 block">
+          <path fill="#f9fafb" d="M0,20 C240,40 480,0 720,15 C960,30 1200,35 1440,20 L1440,40 L0,40 Z"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- CONTENU                                                       -->
+    <!-- ============================================================= -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-12 -mt-6 relative z-10">
+
+      <!-- Chargement -->
+      <div id="chargement" class="flex flex-col items-center justify-center py-20 gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-white shadow-md flex items-center justify-center">
+          <div class="spinner"></div>
+        </div>
+        <p class="text-sm text-gray-500">Chargement du cours…</p>
+      </div>
+
+      <div id="contenu" class="hidden space-y-6">
+
+        <!-- ============ EN-TÊTE DU COURS ============ -->
+        <div class="anim-fade-up carte p-6 sm:p-8">
+
+          <!-- Badges (catégorie + niveau) -->
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span
+              id="cours-categorie"
+              class="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wider uppercase
+                     bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full border border-indigo-100"
+            ></span>
+            <span
+              id="cours-niveau"
+              class="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wider uppercase
+                     bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full border border-amber-100"
+            ></span>
+          </div>
+
+          <!-- Titre -->
+          <h1
+            id="cours-titre"
+            class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight mb-3 leading-tight"
+          ></h1>
+
+          <!-- Description -->
+          <p id="cours-description" class="text-gray-600 leading-relaxed mb-5"></p>
+
+          <!-- Méta : enseignant -->
+          <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-gray-500 mb-6 pt-4 border-t border-gray-100">
+            <span class="inline-flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-500">
+                <i class="fa-solid fa-chalkboard-user text-xs"></i>
+              </span>
+              <span id="cours-enseignant" class="font-medium text-gray-700"></span>
+            </span>
+          </div>
+
+          <!-- Bloc progression -->
+          <div id="bloc-progression" class="hidden mb-6 p-4 bg-gradient-to-r from-indigo-50 to-violet-50
+                                              border border-indigo-100 rounded-xl">
+            <div class="flex justify-between items-center text-sm mb-2">
+              <span class="font-medium text-gray-700 flex items-center gap-2">
+                <i class="fa-solid fa-chart-line text-indigo-600"></i>
+                Votre progression
+              </span>
+              <span id="texte-progression" class="font-bold text-indigo-700">0%</span>
+            </div>
+            <div class="w-full bg-white/70 rounded-full h-2.5 overflow-hidden">
+              <div
+                id="barre-progression"
+                class="bg-gradient-to-r from-indigo-500 to-violet-500 h-full rounded-full transition-all duration-500"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Boutons d'action -->
+          <div class="flex flex-wrap gap-3">
+            <button
+              id="btn-inscription"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-white
+                     bg-gradient-to-r from-indigo-600 to-violet-600
+                     hover:from-indigo-700 hover:to-violet-700
+                     shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30
+                     transition-all duration-200"
+            >
+              <i class="fa-solid fa-plus"></i>
+              <span>S'inscrire au cours</span>
+            </button>
+
+            <a
+              id="btn-certificat"
+              href="#"
+              target="_blank"
+              class="hidden inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-white
+                     bg-gradient-to-r from-emerald-500 to-green-600
+                     hover:from-emerald-600 hover:to-green-700
+                     shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30
+                     transition-all duration-200"
+            >
+              <i class="fa-solid fa-certificate"></i>
+              <span>Télécharger le certificat</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- ============ CHAPITRES ============ -->
+        <div class="anim-fade-up anim-delay-1 carte p-6 sm:p-7">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2.5">
+              <span class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <i class="fa-solid fa-list text-sm"></i>
+              </span>
+              Chapitres
+            </h2>
+            <span id="compteur-chapitres" class="text-xs text-gray-400 font-medium"></span>
+          </div>
+          <div id="liste-chapitres" class="space-y-2.5"></div>
+        </div>
+
+        <!-- ============ SUPPORTS PDF ============ -->
+        <div class="anim-fade-up anim-delay-2 carte p-6 sm:p-7">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2.5">
+              <span class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                <i class="fa-solid fa-file-pdf text-sm"></i>
+              </span>
+              Supports PDF
+            </h2>
+            <span id="compteur-supports" class="text-xs text-gray-400 font-medium"></span>
+          </div>
+          <div id="liste-supports" class="space-y-2.5"></div>
+        </div>
+
+        <!-- ============ QUIZ ============ -->
+        <div class="anim-fade-up anim-delay-2 carte p-6 sm:p-7">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2.5">
+              <span class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <i class="fa-solid fa-circle-question text-sm"></i>
+              </span>
+              Quiz
+            </h2>
+            <span id="compteur-quiz" class="text-xs text-gray-400 font-medium"></span>
+          </div>
+          <div id="liste-quiz" class="space-y-2.5"></div>
+        </div>
+
+        <!-- ============ COMMENTAIRES ============ -->
+        <div class="anim-fade-up anim-delay-3 carte p-6 sm:p-7">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2.5">
+              <span class="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
+                <i class="fa-solid fa-comments text-sm"></i>
+              </span>
+              Commentaires
+            </h2>
+            <span id="compteur-commentaires" class="text-xs text-gray-400 font-medium"></span>
+          </div>
+
+          <!-- Formulaire ajout commentaire -->
+          <form id="form-commentaire" class="hidden mb-5">
+            <div class="relative">
+              <i class="fa-solid fa-pen absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
+              <input
+                id="texte-commentaire"
+                type="text"
+                placeholder="Partagez votre avis sur ce cours…"
+                class="w-full pl-11 pr-32 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                       transition-all duration-200"
+              />
+              <button
+                type="submit"
+                class="absolute right-1.5 top-1/2 -translate-y-1/2 inline-flex items-center gap-2
+                       px-4 py-2 rounded-lg text-sm font-medium text-white
+                       bg-gradient-to-r from-indigo-600 to-violet-600
+                       hover:from-indigo-700 hover:to-violet-700
+                       shadow-md shadow-indigo-500/20 hover:shadow-lg
+                       transition-all duration-200"
+              >
+                <i class="fa-solid fa-paper-plane text-xs"></i>
+                <span class="hidden sm:inline">Envoyer</span>
+              </button>
+            </div>
+          </form>
+
+          <div id="liste-commentaires" class="space-y-3"></div>
+        </div>
+
+      </div>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/course-detail.js"></script>
+    <script>
+      afficherNavbar();
+    </script>
+  </body>
+</html>

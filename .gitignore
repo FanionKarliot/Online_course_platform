@@ -1,4 +1,8 @@
 node_modules
 .env
 uploads/*
-notes
+!uploads/.gitkeep
+# Dossier de notes personnelles
+notes/
+.postman/
+postman/

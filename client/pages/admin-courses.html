@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administration — Cours | CoursEnLigne</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes modalIn {
+        from { opacity: 0; transform: translateY(16px) scale(0.98); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      .anim-fade-up { animation: fadeInUp 0.5s ease-out both; }
+      .anim-delay-1 { animation-delay: 0.08s; }
+      .anim-delay-2 { animation-delay: 0.16s; }
+      .anim-delay-3 { animation-delay: 0.24s; }
+
+      .blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.35;
+        pointer-events: none;
+      }
+
+      /* Carte cours (injectée par admin-courses.js) */
+      .carte-admin {
+        background: #fff;
+        border: 1px solid #f1f5f9;
+        border-radius: 1rem;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .carte-admin:hover {
+        transform: translateY(-2px);
+        border-color: #c7d2fe;
+        box-shadow: 0 12px 28px -10px rgba(79, 70, 229, 0.12);
+      }
+
+      /* Modale animation */
+      #modale-cours:not(.hidden) > div {
+        animation: modalIn 0.25s ease-out;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div id="navbar"></div>
+
+    <!-- ============================================================= -->
+    <!-- EN-TÊTE DÉGRADÉ                                               -->
+    <!-- ============================================================= -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 text-white">
+      <div class="blob w-80 h-80 bg-violet-400 -top-20 -left-20"></div>
+      <div class="blob w-72 h-72 bg-indigo-300 top-1/2 -right-16"></div>
+      <div class="absolute inset-0 opacity-[0.07]"
+           style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+      <div class="relative max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <nav class="anim-fade-up flex items-center gap-2 text-xs text-indigo-100/80 mb-4">
+          <a href="/index.html" class="hover:text-white transition-colors">Accueil</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span class="text-white font-medium">Administration</span>
+        </nav>
+
+        <div class="anim-fade-up anim-delay-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+          <div class="flex items-center gap-4">
+            <span class="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20
+                         flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-user-shield text-xl"></i>
+            </span>
+            <div>
+              <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+                Administration des cours
+              </h1>
+              <p class="text-sm sm:text-base text-indigo-100/90 mt-1">
+                Créez, modifiez et gérez le catalogue.
+              </p>
+            </div>
+          </div>
+
+          <button
+            id="btn-nouveau-cours"
+            class="inline-flex items-center justify-center gap-2
+                   bg-white text-indigo-700 font-semibold px-5 py-3 rounded-xl
+                   hover:bg-indigo-50 shadow-lg shadow-black/10 hover:shadow-xl
+                   transition-all duration-200 w-full sm:w-auto"
+          >
+            <i class="fa-solid fa-plus"></i>
+            <span>Nouveau cours</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="absolute bottom-0 left-0 right-0 leading-none">
+        <svg viewBox="0 0 1440 40" preserveAspectRatio="none" class="w-full h-8 block">
+          <path fill="#f9fafb" d="M0,20 C240,40 480,0 720,15 C960,30 1200,35 1440,20 L1440,40 L0,40 Z"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- CONTENU                                                       -->
+    <!-- ============================================================= -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-12 -mt-6 relative z-10">
+
+      <!-- Compteur + info -->
+      <div class="anim-fade-up flex items-center justify-between mb-4">
+        <h2 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <i class="fa-solid fa-list text-indigo-600"></i>
+          Liste des cours
+        </h2>
+        <span id="compteur-cours-admin" class="text-xs text-gray-400 font-medium"></span>
+      </div>
+
+      <!-- Liste -->
+      <div id="liste-cours-admin" class="space-y-3"></div>
+
+    </main>
+
+    <!-- ============================================================= -->
+    <!-- MODALE : créer/modifier un cours                              -->
+    <!-- ============================================================= -->
+    <div
+      id="modale-cours"
+      class="hidden fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+    >
+      <div class="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto
+                  shadow-2xl shadow-gray-900/20 border border-gray-100">
+
+        <!-- En-tête modale -->
+        <div class="flex items-center justify-between px-6 py-4
+                    bg-gradient-to-r from-indigo-50 to-violet-50
+                    border-b border-gray-100 rounded-t-2xl">
+          <h2 id="modale-titre" class="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <i class="fa-solid fa-plus-circle text-indigo-600"></i>
+            Nouveau cours
+          </h2>
+          <button
+            type="button"
+            id="btn-fermer-modale"
+            class="w-8 h-8 rounded-lg flex items-center justify-center
+                   text-gray-400 hover:text-gray-700 hover:bg-white/70
+                   transition-colors"
+            aria-label="Fermer"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="form-cours" class="p-6 space-y-4">
+          <input type="hidden" id="cours-id" />
+
+          <!-- Titre -->
+          <div>
+            <label for="input-titre" class="block text-sm font-medium text-gray-700 mb-1.5">
+              Titre
+            </label>
+            <div class="relative group">
+              <i class="fa-solid fa-heading absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm
+                        pointer-events-none transition-colors group-focus-within:text-indigo-500"></i>
+              <input
+                type="text"
+                id="input-titre"
+                required
+                placeholder="Ex : Introduction au JavaScript"
+                class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800
+                       placeholder-gray-400
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                       transition-all duration-200"
+              />
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label for="input-description" class="block text-sm font-medium text-gray-700 mb-1.5">
+              Description
+            </label>
+            <textarea
+              id="input-description"
+              required
+              rows="3"
+              placeholder="Décrivez brièvement le contenu du cours…"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800
+                     placeholder-gray-400 resize-none
+                     focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                     transition-all duration-200"
+            ></textarea>
+          </div>
+
+          <!-- Catégorie + Niveau -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+            <div>
+              <label for="input-categorie" class="block text-sm font-medium text-gray-700 mb-1.5">
+                Catégorie
+              </label>
+              <div class="relative group">
+                <i class="fa-solid fa-layer-group absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm
+                          pointer-events-none transition-colors group-focus-within:text-indigo-500"></i>
+                <input
+                  type="text"
+                  id="input-categorie"
+                  required
+                  placeholder="Ex : Web"
+                  class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800
+                         placeholder-gray-400
+                         focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                         transition-all duration-200"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="input-niveau" class="block text-sm font-medium text-gray-700 mb-1.5">
+                Niveau
+              </label>
+              <div class="relative group">
+                <i class="fa-solid fa-signal absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm
+                          pointer-events-none transition-colors group-focus-within:text-indigo-500"></i>
+                <select
+                  id="input-niveau"
+                  class="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800
+                         appearance-none cursor-pointer
+                         focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                         transition-all duration-200"
+                >
+                  <option value="debutant">Débutant</option>
+                  <option value="intermediaire">Intermédiaire</option>
+                  <option value="avance">Avancé</option>
+                </select>
+                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400
+                          pointer-events-none"></i>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Enseignant -->
+          <div>
+            <label for="input-enseignant" class="block text-sm font-medium text-gray-700 mb-1.5">
+              Enseignant
+            </label>
+            <div class="relative group">
+              <i class="fa-solid fa-chalkboard-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm
+                        pointer-events-none transition-colors group-focus-within:text-indigo-500"></i>
+              <input
+                type="text"
+                id="input-enseignant"
+                required
+                placeholder="Ex : M. Randria"
+                class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800
+                       placeholder-gray-400
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                       transition-all duration-200"
+              />
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex flex-col-reverse sm:flex-row gap-3 pt-3 border-t border-gray-100 mt-2">
+            <button
+              type="button"
+              id="btn-annuler"
+              class="flex-1 py-3 rounded-xl font-medium
+                     text-gray-700 bg-gray-100 hover:bg-gray-200
+                     transition-colors duration-200"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              class="flex-1 py-3 rounded-xl font-medium text-white
+                     bg-gradient-to-r from-indigo-600 to-violet-600
+                     hover:from-indigo-700 hover:to-violet-700
+                     shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30
+                     transition-all duration-200
+                     inline-flex items-center justify-center gap-2"
+            >
+              <i class="fa-solid fa-check"></i>
+              <span>Enregistrer</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/admin-courses.js"></script>
+    <script>
+      exigerAdmin();
+      afficherNavbar();
+
+      // Fermeture de la modale : bouton X + clic hors zone
+      document.getElementById('btn-fermer-modale')?.addEventListener('click', () => {
+        document.getElementById('modale-cours').classList.add('hidden');
+      });
+      document.getElementById('modale-cours')?.addEventListener('click', (e) => {
+        if (e.target.id === 'modale-cours') {
+          e.currentTarget.classList.add('hidden');
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.getElementById('modale-cours')?.classList.add('hidden');
+        }
+      });
+    </script>
+  </body>
+</html>
