@@ -4,10 +4,12 @@ const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/db');
 
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../client')));
 
 const authRoutes = require('./routes/authRoutes');
 const errorHandler = require('./middlewares/errorHandler');

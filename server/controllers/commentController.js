@@ -1,4 +1,5 @@
-const { Comment, Enrollment } = require('../models');
+const { Comment, Enrollment, Course } = require('../models');
+const { notifierAdmins } = require('../services/notificationService');
 
 // POST /api/comments  (étudiant commente un cours)
 exports.addComment = async (req, res, next) => {
@@ -18,6 +19,13 @@ exports.addComment = async (req, res, next) => {
       cours: coursId,
       auteur: req.user._id,
       texte,
+    });
+
+    const cours = await Course.findById(coursId);
+    await notifierAdmins({
+      message: `${req.user.nom} a commenté le cours "${cours?.titre || ''}"`,
+      lien: `/pages/course-detail.html?id=${coursId}`,
+      exclure: req.user._id, // un admin qui commente n'est pas notifié de son propre commentaire
     });
 
     const commentairePeuple = await commentaire.populate('auteur', 'nom');
@@ -58,3 +66,4 @@ exports.deleteComment = async (req, res, next) => {
     next(err);
   }
 };
+

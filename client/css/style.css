@@ -22,3 +22,26 @@ body {
 @keyframes tourner {
   to { transform: rotate(360deg); }
 }
+
+/* Animations pour la navbar */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar discrète pour la popup notifications */
+#popup-notif-liste::-webkit-scrollbar {
+  width: 6px;
+}
+#popup-notif-liste::-webkit-scrollbar-thumb {
+  background-color: #e2e8f0;
+  border-radius: 3px;
+}
+#popup-notif-liste::-webkit-scrollbar-thumb:hover {
+  background-color: #cbd5e1;
+}

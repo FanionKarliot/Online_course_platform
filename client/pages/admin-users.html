@@ -3,59 +3,149 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Administration — Utilisateurs</title>
+    <title>Administration — Utilisateurs | CoursEnLigne</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .anim-fade-up { animation: fadeInUp 0.5s ease-out both; }
+      .anim-delay-1 { animation-delay: 0.08s; }
+      .anim-delay-2 { animation-delay: 0.16s; }
+
+      .blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.35;
+        pointer-events: none;
+      }
+
+      /* Ligne utilisateur */
+      .ligne-user {
+        transition: background-color 0.2s ease;
+      }
+      .ligne-user:hover {
+        background-color: #fafbff;
+      }
+    </style>
   </head>
-  <body class="min-h-screen">
+  <body class="min-h-screen bg-gray-50 overflow-x-hidden">
     <div id="navbar"></div>
 
-    <main class="max-w-4xl mx-auto px-6 py-8">
-      <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">
-          <i class="fa-solid fa-users text-indigo-600"></i> Gestion des
-          utilisateurs
-        </h1>
-        <a
-          href="/pages/admin-courses.html"
-          class="text-sm text-indigo-600 hover:underline"
-        >
-          <i class="fa-solid fa-arrow-left"></i> Retour aux cours
-        </a>
+    <!-- ============================================================= -->
+    <!-- EN-TÊTE DÉGRADÉ                                               -->
+    <!-- ============================================================= -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 text-white">
+      <div class="blob w-80 h-80 bg-violet-400 -top-20 -left-20"></div>
+      <div class="blob w-72 h-72 bg-indigo-300 top-1/2 -right-16"></div>
+      <div class="absolute inset-0 opacity-[0.07]"
+           style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+      <div class="relative max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <nav class="anim-fade-up flex items-center gap-2 text-xs text-indigo-100/80 mb-4">
+          <a href="/index.html" class="hover:text-white transition-colors">Accueil</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <a href="/pages/admin-courses.html" class="hover:text-white transition-colors">Admin cours</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span class="text-white font-medium">Utilisateurs</span>
+        </nav>
+
+        <div class="anim-fade-up anim-delay-1 flex items-start gap-4">
+          <span class="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20
+                       flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-users text-xl"></i>
+          </span>
+          <div>
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+              Gestion des utilisateurs
+            </h1>
+            <p class="text-sm sm:text-base text-indigo-100/90 mt-1">
+              Consultez, filtrez et gérez les comptes de la plateforme.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div class="flex gap-3 mb-6">
-        <input
-          id="recherche-utilisateur"
-          type="text"
-          placeholder="Rechercher par nom ou email..."
-          class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        <select
-          id="filtre-role"
-          class="border border-gray-300 rounded-lg px-4 py-2"
-        >
-          <option value="">Tous les rôles</option>
-          <option value="etudiant">Étudiant</option>
-          <option value="admin">Admin</option>
-        </select>
+      <div class="absolute bottom-0 left-0 right-0 leading-none">
+        <svg viewBox="0 0 1440 40" preserveAspectRatio="none" class="w-full h-8 block">
+          <path fill="#f9fafb" d="M0,20 C240,40 480,0 720,15 C960,30 1200,35 1440,20 L1440,40 L0,40 Z"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- CONTENU                                                       -->
+    <!-- ============================================================= -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-12 -mt-6 relative z-10">
+
+      <!-- Barre de recherche + filtre -->
+      <div class="anim-fade-up anim-delay-1 bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg shadow-indigo-500/5
+                  border border-gray-100 p-4 mb-4">
+        <div class="flex flex-col md:flex-row gap-3">
+
+          <!-- Recherche -->
+          <div class="relative flex-1 group">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm
+                      transition-colors group-focus-within:text-indigo-500"></i>
+            <input
+              id="recherche-utilisateur"
+              type="text"
+              placeholder="Rechercher par nom ou email…"
+              class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800
+                     placeholder-gray-400
+                     focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                     transition-all duration-200"
+            />
+          </div>
+
+          <!-- Filtre rôle -->
+          <div class="relative md:w-52 group">
+            <i class="fa-solid fa-user-tag absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm
+                      pointer-events-none transition-colors group-focus-within:text-indigo-500"></i>
+            <select
+              id="filtre-role"
+              class="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800
+                     appearance-none cursor-pointer
+                     focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                     transition-all duration-200"
+            >
+              <option value="">Tous les rôles</option>
+              <option value="etudiant">Étudiant</option>
+              <option value="admin">Admin</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400
+                      pointer-events-none"></i>
+          </div>
+
+        </div>
       </div>
 
-      <p id="compteur-utilisateurs" class="text-sm text-gray-500 mb-3"></p>
+      <!-- Compteur -->
+      <div class="anim-fade-up anim-delay-2 flex items-center justify-between mb-3 px-1">
+        <p id="compteur-utilisateurs" class="text-sm text-gray-500 font-medium"></p>
+        <span class="text-xs text-gray-400 flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-[10px]"></i>
+          Cliquez sur un utilisateur pour plus d'options
+        </span>
+      </div>
 
+      <!-- Liste (une seule div, ID unique) -->
       <div
         id="liste-utilisateurs"
-        class="bg-white rounded-xl shadow-sm divide-y divide-gray-100"
-      ></div>
+        class="anim-fade-up anim-delay-2 bg-white rounded-2xl border border-gray-100 shadow-sm
+               divide-y divide-gray-100 overflow-hidden"
+      >
+        <!-- Les utilisateurs seront injectés ici par admin-users.js -->
+      </div>
 
-      <div
-        id="liste-utilisateurs"
-        class="bg-white rounded-xl shadow-sm divide-y divide-gray-100"
-      ></div>
     </main>
 
     <script src="/js/api.js"></script>

@@ -1,5 +1,7 @@
 const { User } = require('../models');
 const { genererToken } = require('../config/jwt');
+const { Notification } = require('../models');
+const { notifierAdmins } = require('../services/notificationService');
 
 // POST /api/auth/register
 exports.register = async (req, res, next) => {
@@ -16,6 +18,18 @@ exports.register = async (req, res, next) => {
     }
 
     const user = await User.create({ nom, email, motDePasse, filiere });
+
+    await notifierAdmins({
+      message: `Nouvel étudiant inscrit : ${user.nom} (${user.email})`,
+      lien: '/pages/admin-users.html',
+    });
+    await Notification.create({
+      utilisateur: user._id,
+      message: 'Bienvenue sur CoursEnLigne ! Parcourez le catalogue pour commencer.',
+      type: 'info',
+      lien: '/pages/courses.html',
+    });
+
     const token = genererToken(user._id, user.role);
 
     res.status(201).json({

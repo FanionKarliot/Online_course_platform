@@ -22,11 +22,18 @@ exports.getCertificat = async (req, res, next) => {
       enrollmentId: inscription._id,
     });
 
-    await Notification.create({
-      utilisateur: req.user._id,
-      message: `Votre certificat pour "${cours.titre}" est prêt`,
-      type: 'certificat',
+    const message = `Votre certificat pour "${cours.titre}" est prêt`;
+    const dejaNotifie = await Notification.exists({
+      utilisateur: req.user._id, type: 'certificat', message,
     });
+    if (!dejaNotifie) {
+      await Notification.create({
+        utilisateur: req.user._id,
+        message,
+        type: 'certificat',
+        lien: `/pages/course-detail.html?id=${req.params.coursId}`,
+      });
+    }
 
     res.json({ url });
   } catch (err) {

@@ -1,22 +1,40 @@
-const coursId = new URLSearchParams(window.location.search).get('id');
+const coursId = new URLSearchParams(window.location.search).get("id");
 let inscriptionActuelle = null;
 // if (!coursId) window.location.href = '/index.html';
+
+// PDF partagé, affiché quand un cours n'a aucun support propre
+const PDF_PAR_DEFAUT = {
+  titre: "Support de cours (document général)",
+  url: "/assets/support-par-defaut.pdf",
+};
+
+function afficherSupport(support) {
+  return `
+    <a href="${support.url}" download target="_blank"
+       class="flex items-center justify-between border border-gray-200 rounded-lg p-4 hover:bg-indigo-50 transition">
+      <span class="flex items-center gap-3 text-gray-800">
+        <i class="fa-solid fa-file-pdf text-red-500 text-xl"></i> ${support.titre}
+      </span>
+      <span class="text-sm text-indigo-600"><i class="fa-solid fa-download"></i> Télécharger</span>
+    </a>
+  `;
+}
 
 function afficherChapitre(chapitre, estTermine) {
   return `
     <div class="flex items-center justify-between border border-gray-200 rounded-lg p-4">
       <div class="flex items-center gap-3">
-        <i class="fa-solid ${estTermine ? 'fa-circle-check text-green-500' : 'fa-circle text-gray-300'}"></i>
+        <i class="fa-solid ${estTermine ? "fa-circle-check text-green-500" : "fa-circle text-gray-300"}"></i>
         <div>
           <p class="font-medium text-gray-800">${chapitre.ordre}. ${chapitre.titre}</p>
-          ${chapitre.videoUrl ? `<a href="${chapitre.videoUrl}" target="_blank" class="text-xs text-indigo-600 hover:underline"><i class="fa-solid fa-video"></i> Voir la vidéo</a>` : ''}
-          ${chapitre.pdfUrl ? `<a href="${chapitre.pdfUrl}" target="_blank" class="text-xs text-indigo-600 hover:underline ml-3"><i class="fa-solid fa-file-pdf"></i> Support PDF</a>` : ''}
+          ${chapitre.videoUrl ? `<a href="${chapitre.videoUrl}" target="_blank" class="text-xs text-indigo-600 hover:underline"><i class="fa-solid fa-video"></i> Voir la vidéo</a>` : ""}
+          ${chapitre.pdfUrl ? `<a href="${chapitre.pdfUrl}" target="_blank" class="text-xs text-indigo-600 hover:underline ml-3"><i class="fa-solid fa-file-pdf"></i> Support PDF</a>` : ""}
         </div>
       </div>
       ${
         inscriptionActuelle && !estTermine
           ? `<button onclick="terminerChapitre('${chapitre._id}')" class="text-sm bg-gray-100 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg">Marquer terminé</button>`
-          : ''
+          : ""
       }
     </div>
   `;
@@ -31,18 +49,18 @@ function afficherQuiz(quiz, resultat) {
       </div>
       <a href="/pages/quiz.html?id=${quiz._id}"
          class="text-sm bg-indigo-600 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-700">
-        ${resultat ? `Repasser (dernier : ${resultat.pourcentage}%)` : 'Passer le quiz'}
+        ${resultat ? `Repasser (dernier : ${resultat.pourcentage}%)` : "Passer le quiz"}
       </a>
     </div>
   `;
 }
 
 function afficherCommentaire(c) {
-  const date = new Date(c.createdAt).toLocaleDateString('fr-FR');
+  const date = new Date(c.createdAt).toLocaleDateString("fr-FR");
   return `
     <div class="border-b border-gray-100 pb-3">
       <div class="flex items-center justify-between">
-        <span class="font-medium text-gray-700 text-sm">${c.auteur?.nom || 'Utilisateur'}</span>
+        <span class="font-medium text-gray-700 text-sm">${c.auteur?.nom || "Utilisateur"}</span>
         <span class="text-xs text-gray-400">${date}</span>
       </div>
       <p class="text-gray-600 text-sm mt-1">${c.texte}</p>
@@ -73,11 +91,12 @@ async function chargerPage() {
   try {
     const { cours, chapitres } = await api.getCourse(coursId);
 
-    document.getElementById('cours-categorie').textContent = cours.categorie;
-    document.getElementById('cours-titre').textContent = cours.titre;
-    document.getElementById('cours-description').textContent = cours.description;
-    document.getElementById('cours-enseignant').textContent = cours.enseignant;
-    document.getElementById('cours-niveau').textContent = cours.niveau;
+    document.getElementById("cours-categorie").textContent = cours.categorie;
+    document.getElementById("cours-titre").textContent = cours.titre;
+    document.getElementById("cours-description").textContent =
+      cours.description;
+    document.getElementById("cours-enseignant").textContent = cours.enseignant;
+    document.getElementById("cours-niveau").textContent = cours.niveau;
 
     // Récupérer mon inscription si connecté
     let resultats = [];
@@ -93,28 +112,31 @@ async function chargerPage() {
     }
 
     // Affichage conditionnel : inscription / progression / certificat
-    const btnInscription = document.getElementById('btn-inscription');
-    const blocProgression = document.getElementById('bloc-progression');
-    const btnCertificat = document.getElementById('btn-certificat');
+    const btnInscription = document.getElementById("btn-inscription");
+    const blocProgression = document.getElementById("bloc-progression");
+    const btnCertificat = document.getElementById("btn-certificat");
 
     if (!estConnecte()) {
-      btnInscription.onclick = () => (window.location.href = '/pages/login.html');
+      btnInscription.onclick = () =>
+        (window.location.href = "/pages/login.html");
     } else if (!inscriptionActuelle) {
-      btnInscription.classList.remove('hidden');
+      btnInscription.classList.remove("hidden");
       btnInscription.onclick = sInscrire;
     } else {
-      btnInscription.classList.add('hidden');
-      blocProgression.classList.remove('hidden');
-      document.getElementById('texte-progression').textContent = `${inscriptionActuelle.progression}%`;
-      document.getElementById('barre-progression').style.width = `${inscriptionActuelle.progression}%`;
+      btnInscription.classList.add("hidden");
+      blocProgression.classList.remove("hidden");
+      document.getElementById("texte-progression").textContent =
+        `${inscriptionActuelle.progression}%`;
+      document.getElementById("barre-progression").style.width =
+        `${inscriptionActuelle.progression}%`;
 
       if (inscriptionActuelle.termine) {
-        btnCertificat.classList.remove('hidden');
+        btnCertificat.classList.remove("hidden");
         btnCertificat.onclick = async (e) => {
           e.preventDefault();
           try {
             const { url } = await api.getCertificat(coursId);
-            window.open(url, '_blank');
+            window.open(url, "_blank");
           } catch (err) {
             alert(err.message);
           }
@@ -124,46 +146,63 @@ async function chargerPage() {
 
     // Chapitres
     const chapitresTermines = inscriptionActuelle?.chapitresTermines || [];
-    document.getElementById('liste-chapitres').innerHTML = chapitres
-      .map((ch) => afficherChapitre(ch, chapitresTermines.includes(ch._id)))
-      .join('') || '<p class="text-gray-400 text-sm">Aucun chapitre pour le moment</p>';
+    document.getElementById("liste-chapitres").innerHTML =
+      chapitres
+        .map((ch) => afficherChapitre(ch, chapitresTermines.includes(ch._id)))
+        .join("") ||
+      '<p class="text-gray-400 text-sm">Aucun chapitre pour le moment</p>';
+
+    // Supports PDF (réservés aux inscrits)
+    const supports = cours.supports?.length ? cours.supports : [PDF_PAR_DEFAUT];
+    document.getElementById("liste-supports").innerHTML = inscriptionActuelle
+      ? supports.map(afficherSupport).join("")
+      : '<p class="text-sm text-gray-400"><i class="fa-solid fa-lock"></i> Inscrivez-vous au cours pour accéder aux supports PDF.</p>';
 
     // Quiz
     const { quizzes } = await api.getQuizzesByCourse(coursId);
-    document.getElementById('liste-quiz').innerHTML = quizzes
-      .map((q) => afficherQuiz(q, resultats.find((r) => r.quiz._id === q._id)))
-      .join('') || '<p class="text-gray-400 text-sm">Aucun quiz pour le moment</p>';
+    document.getElementById("liste-quiz").innerHTML =
+      quizzes
+        .map((q) =>
+          afficherQuiz(
+            q,
+            resultats.find((r) => r.quiz._id === q._id),
+          ),
+        )
+        .join("") ||
+      '<p class="text-gray-400 text-sm">Aucun quiz pour le moment</p>';
 
     // Commentaires
     const { commentaires } = await api.getComments(coursId);
-    document.getElementById('liste-commentaires').innerHTML = commentaires
-      .map(afficherCommentaire)
-      .join('') || '<p class="text-gray-400 text-sm">Aucun commentaire pour le moment</p>';
+    document.getElementById("liste-commentaires").innerHTML =
+      commentaires.map(afficherCommentaire).join("") ||
+      '<p class="text-gray-400 text-sm">Aucun commentaire pour le moment</p>';
 
     // Formulaire de commentaire (seulement si inscrit)
-    const formCommentaire = document.getElementById('form-commentaire');
-    if (inscriptionActuelle) formCommentaire.classList.remove('hidden');
+    const formCommentaire = document.getElementById("form-commentaire");
+    if (inscriptionActuelle) formCommentaire.classList.remove("hidden");
 
-    document.getElementById('chargement').classList.add('hidden');
-    document.getElementById('contenu').classList.remove('hidden');
+    document.getElementById("chargement").classList.add("hidden");
+    document.getElementById("contenu").classList.remove("hidden");
   } catch (err) {
     // document.getElementById('chargement').innerHTML = `<p class="text-red-500">${err.message}</p>`;
-    window.location.href = '/pages/login.html';
+    window.location.href = "/pages/login.html";
   }
 }
 
-document.getElementById('form-commentaire').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const input = document.getElementById('texte-commentaire');
-  if (!input.value.trim()) return;
+document
+  .getElementById("form-commentaire")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = document.getElementById("texte-commentaire");
+    if (!input.value.trim()) return;
 
-  try {
-    await api.addComment(coursId, input.value.trim());
-    input.value = '';
-    await chargerPage();
-  } catch (err) {
-    alert(err.message);
-  }
-});
+    try {
+      await api.addComment(coursId, input.value.trim());
+      input.value = "";
+      await chargerPage();
+    } catch (err) {
+      alert(err.message);
+    }
+  });
 
 chargerPage();

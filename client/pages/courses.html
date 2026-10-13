@@ -1,42 +1,249 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CoursEnLigne — Catalogue</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="/css/style.css" />
-</head>
-<body class="min-h-screen">
-  <div id="navbar"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoursEnLigne — Catalogue</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .anim-fade-up { animation: fadeInUp 0.5s ease-out both; }
 
-  <main class="max-w-6xl mx-auto px-6 py-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">
-      <i class="fa-solid fa-book-open text-indigo-600"></i> Catalogue des cours
-    </h1>
+      .blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.35;
+        pointer-events: none;
+      }
 
-    <div class="flex flex-col md:flex-row gap-4 mb-6">
-      <input id="recherche" type="text" placeholder="Rechercher un cours..."
-        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-      <select id="filtre-categorie" class="border border-gray-300 rounded-lg px-4 py-2">
-        <option value="">Toutes catégories</option>
-      </select>
-      <select id="filtre-niveau" class="border border-gray-300 rounded-lg px-4 py-2">
-        <option value="">Tous niveaux</option>
-        <option value="debutant">Débutant</option>
-        <option value="intermediaire">Intermédiaire</option>
-        <option value="avance">Avancé</option>
-      </select>
-    </div>
+      /* Carte de cours injectée par courses.js */
+      .carte-cours {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+      .carte-cours:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -12px rgba(79, 70, 229, 0.18);
+      }
 
-    <div id="liste-cours" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-  </main>
+      /* Effet shimmer pendant le chargement */
+      @keyframes shimmer {
+        0%   { background-position: -400px 0; }
+        100% { background-position: 400px 0; }
+      }
+      .squelette {
+        background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+        background-size: 800px 100%;
+        animation: shimmer 1.4s infinite linear;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div id="navbar"></div>
 
-  <script src="/js/api.js"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/navbar.js"></script>
-  <script src="/js/courses.js"></script>
-  <script>afficherNavbar();</script>
-</body>
+    <!-- ============================================================= -->
+    <!-- EN-TÊTE DE PAGE                                               -->
+    <!-- ============================================================= -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 text-white">
+      <!-- Blobs décoratifs -->
+      <div class="blob w-80 h-80 bg-violet-400 -top-20 -left-20"></div>
+      <div class="blob w-72 h-72 bg-indigo-300 top-1/2 -right-16"></div>
+
+      <!-- Motif grille subtil -->
+      <div class="absolute inset-0 opacity-[0.07]"
+           style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+      <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <nav class="anim-fade-up flex items-center gap-2 text-xs text-indigo-100/80 mb-4">
+          <a href="/index.html" class="hover:text-white transition-colors">Accueil</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span class="text-white font-medium">Catalogue</span>
+        </nav>
+
+        <div class="anim-fade-up flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-2">
+              Catalogue des cours
+            </h1>
+            <p class="text-indigo-100/90 max-w-2xl">
+              Parcourez notre sélection, filtrez par catégorie ou niveau et lancez votre prochain apprentissage.
+            </p>
+          </div>
+
+          <div id="compteur-cours" class="hidden sm:flex items-center gap-2
+                                          bg-white/15 backdrop-blur-sm border border-white/20
+                                          px-4 py-2 rounded-xl text-sm">
+            <i class="fa-solid fa-book"></i>
+            <span>Chargement...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vague bas -->
+      <div class="absolute bottom-0 left-0 right-0 leading-none">
+        <svg viewBox="0 0 1440 40" preserveAspectRatio="none" class="w-full h-8 block">
+          <path fill="#f9fafb" d="M0,20 C240,40 480,0 720,15 C960,30 1200,35 1440,20 L1440,40 L0,40 Z"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- BARRE DE FILTRES                                              -->
+    <!-- ============================================================= -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 -mt-6 relative z-10">
+      <div class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg shadow-indigo-500/5 border border-gray-100 p-4 sm:p-5">
+
+        <div class="flex flex-col md:flex-row gap-3">
+
+          <!-- Recherche -->
+          <div class="relative flex-1 group">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-colors group-focus-within:text-indigo-500"></i>
+            <input
+              id="recherche"
+              type="text"
+              placeholder="Rechercher un cours..."
+              class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400
+                     focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                     transition-all duration-200"
+            />
+          </div>
+
+          <!-- Catégorie -->
+          <div class="relative md:w-56 group">
+            <i class="fa-solid fa-layer-group absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none transition-colors group-focus-within:text-indigo-500"></i>
+            <select
+              id="filtre-categorie"
+              class="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800
+                     appearance-none cursor-pointer
+                     focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                     transition-all duration-200"
+            >
+              <option value="">Toutes catégories</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none"></i>
+          </div>
+
+          <!-- Niveau -->
+          <div class="relative md:w-52 group">
+            <i class="fa-solid fa-signal absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none transition-colors group-focus-within:text-indigo-500"></i>
+            <select
+              id="filtre-niveau"
+              class="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800
+                     appearance-none cursor-pointer
+                     focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 focus:bg-white
+                     transition-all duration-200"
+            >
+              <option value="">Tous niveaux</option>
+              <option value="debutant">Débutant</option>
+              <option value="intermediaire">Intermédiaire</option>
+              <option value="avance">Avancé</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none"></i>
+          </div>
+
+          <!-- Reset -->
+          <button
+            id="btn-reset-filtres"
+            type="button"
+            title="Réinitialiser les filtres"
+            class="md:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+                   text-gray-500 hover:text-indigo-700 hover:bg-indigo-50
+                   border border-gray-200 md:border-transparent
+                   transition-colors"
+          >
+            <i class="fa-solid fa-rotate-left text-sm"></i>
+            <span class="md:hidden">Réinitialiser</span>
+          </button>
+
+        </div>
+
+        <!-- Résumé des filtres actifs -->
+        <div id="resume-filtres" class="hidden mt-3 flex flex-wrap items-center gap-2 text-xs text-gray-500">
+          <span class="text-gray-400">Filtres actifs :</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- LISTE DES COURS                                               -->
+    <!-- ============================================================= -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 pb-24 md:pb-12">
+
+      <div id="liste-cours" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Squelettes de chargement -->
+        <div class="squelette h-64 rounded-2xl"></div>
+        <div class="squelette h-64 rounded-2xl"></div>
+        <div class="squelette h-64 rounded-2xl"></div>
+      </div>
+
+      <!-- Message vide -->
+      <div id="cours-vide" class="hidden text-center py-16">
+        <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-100 to-violet-100
+                    flex items-center justify-center text-indigo-500 text-3xl">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <h3 class="font-bold text-gray-800 mb-1">Aucun cours trouvé</h3>
+        <p class="text-sm text-gray-500">Essayez d'autres filtres ou une autre recherche.</p>
+      </div>
+
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/courses.js"></script>
+    <script>
+      afficherNavbar();
+
+      // ============ Bouton Reset ============
+      document.getElementById('btn-reset-filtres')?.addEventListener('click', () => {
+        document.getElementById('recherche').value = '';
+        document.getElementById('filtre-categorie').value = '';
+        document.getElementById('filtre-niveau').value = '';
+        document.getElementById('recherche').dispatchEvent(new Event('input'));
+        document.getElementById('filtre-categorie').dispatchEvent(new Event('change'));
+        document.getElementById('filtre-niveau').dispatchEvent(new Event('change'));
+      });
+
+      // ============ Résumé des filtres actifs ============
+      const resume = document.getElementById('resume-filtres');
+      const majResume = () => {
+        const recherche = document.getElementById('recherche').value.trim();
+        const categorie = document.getElementById('filtre-categorie').value;
+        const niveau = document.getElementById('filtre-niveau').value;
+
+        const puces = [];
+        if (recherche) puces.push(`<span class="px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 font-medium">"${recherche}"</span>`);
+        if (categorie) puces.push(`<span class="px-2 py-1 rounded-full bg-violet-50 text-violet-700 font-medium">${categorie}</span>`);
+        if (niveau) {
+          const labels = { debutant: 'Débutant', intermediaire: 'Intermédiaire', avance: 'Avancé' };
+          puces.push(`<span class="px-2 py-1 rounded-full bg-amber-50 text-amber-700 font-medium">${labels[niveau] || niveau}</span>`);
+        }
+
+        if (puces.length) {
+          resume.classList.remove('hidden');
+          resume.classList.add('flex');
+          resume.innerHTML = '<span class="text-gray-400">Filtres actifs :</span>' + puces.join('');
+        } else {
+          resume.classList.add('hidden');
+          resume.classList.remove('flex');
+        }
+      };
+
+      ['recherche', 'filtre-categorie', 'filtre-niveau'].forEach((id) => {
+        const el = document.getElementById(id);
+        el.addEventListener('input', majResume);
+        el.addEventListener('change', majResume);
+      });
+    </script>
+  </body>
 </html>

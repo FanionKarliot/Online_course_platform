@@ -53,6 +53,7 @@ function carteNotification(notif) {
     succes: "fa-circle-check text-green-500",
     quiz: "fa-circle-question text-amber-500",
     certificat: "fa-certificate text-purple-500",
+    admin: "fa-user-shield text-indigo-500",
   };
 
   return `

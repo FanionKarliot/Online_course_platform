@@ -1,13 +1,22 @@
 // le cœur de la partie client : toutes les routes du backend passent par ici, aucun fetch ailleurs écrit en dur
 const API_BASE = '/api';
 
+// Favicon déclaré une seule fois pour toutes les pages
+if (!document.querySelector('link[rel~="icon"]')) {
+  const lien = document.createElement('link');
+  lien.rel = 'icon';
+  lien.href = '/favicon.ico';
+  document.head.appendChild(lien);
+}
+
 function getToken() {
   return localStorage.getItem('token');
 }
 
 async function apiFetch(endpoint, options = {}) {
   const token = getToken();
-  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  const headers = { ...options.headers };
+  if (!(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const reponse = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
@@ -53,6 +62,7 @@ const api = {
 
   // Notifications
   getNotifications: () => apiFetch('/notifications'),
+  markRead: (id) => apiFetch(`/notifications/${id}/lue`, { method: 'PATCH' }),
   markAllRead: () => apiFetch('/notifications/tout-lire', { method: 'PATCH' }),
 
   // / Utilisateurs (admin)
@@ -65,6 +75,8 @@ const api = {
   createCourse: (body) => apiFetch('/courses', { method: 'POST', body: JSON.stringify(body) }),
   updateCourse: (id, body) => apiFetch(`/courses/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
   deleteCourse: (id) => apiFetch(`/courses/${id}`, { method: 'DELETE' }),
+  addSupport: (coursId, formData) => apiFetch(`/courses/${coursId}/supports`, { method: 'POST', body: formData }),
+  deleteSupport: (coursId, supportId) => apiFetch(`/courses/${coursId}/supports/${supportId}`, { method: 'DELETE' }),
 
   // Chapitres (admin)
   addChapter: (coursId, body) =>

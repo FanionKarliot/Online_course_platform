@@ -1,5 +1,6 @@
 const { Enrollment, Course, Chapter, Notification } = require('../models');
 const { recalculerProgression } = require('../services/progressionService');
+const { notifierAdmins } = require('../services/notificationService');
 
 // POST /api/enrollments  (étudiant s'inscrit à un cours)
 exports.enroll = async (req, res, next) => {
@@ -21,6 +22,11 @@ exports.enroll = async (req, res, next) => {
       utilisateur: req.user._id,
       message: `Vous êtes inscrit au cours "${cours.titre}"`,
       type: 'info',
+    });
+
+    await notifierAdmins({
+      message: `${req.user.nom} s'est inscrit au cours "${cours.titre}"`,
+      lien: `/pages/admin-course-manage.html?id=${cours._id}`,
     });
 
     res.status(201).json({ inscription });
@@ -68,6 +74,8 @@ exports.marquerChapitreTermine = async (req, res, next) => {
     const inscription = await Enrollment.findOne({ etudiant: req.user._id, cours: coursId });
     if (!inscription) return res.status(404).json({ message: "Vous n'êtes pas inscrit à ce cours" });
 
+    const etaitTermine = inscription.termine; // état AVANT le recalcul
+
     const dejaFait = inscription.chapitresTermines.some((id) => id.equals(chapterId));
     if (!dejaFait) {
       inscription.chapitresTermines.push(chapterId);
@@ -76,11 +84,18 @@ exports.marquerChapitreTermine = async (req, res, next) => {
 
     const miseAJour = await recalculerProgression(inscription._id);
 
-    if (miseAJour.termine) {
+    // On notifie uniquement au moment où le cours PASSE à « terminé »
+    if (miseAJour.termine && !etaitTermine) {
+      const cours = await Course.findById(coursId);
       await Notification.create({
         utilisateur: req.user._id,
-        message: `Félicitations, vous avez terminé le cours !`,
+        message: `Félicitations, vous avez terminé le cours "${cours.titre}" !`,
         type: 'succes',
+        lien: `/pages/course-detail.html?id=${coursId}`,
+      });
+      await notifierAdmins({
+        message: `${req.user.nom} a terminé le cours "${cours.titre}"`,
+        lien: '/pages/admin-users.html',
       });
     }
 

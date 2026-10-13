@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Notification  } = require('../models');
 
 // GET /api/users  (admin uniquement — liste tous les utilisateurs)
 exports.getUsers = async (req, res, next) => {
@@ -29,6 +29,12 @@ exports.updateRole = async (req, res, next) => {
       { new: true, runValidators: true }
     );
     if (!utilisateur) return res.status(404).json({ message: 'Utilisateur introuvable' });
+
+    await Notification.create({
+      utilisateur: utilisateur._id,
+      message: `Votre rôle a été modifié : vous êtes maintenant ${role === 'admin' ? 'administrateur' : 'étudiant'}. Reconnectez-vous pour que le changement soit pris en compte.`,
+      type: 'info',
+    });
 
     res.json({ utilisateur });
   } catch (err) {

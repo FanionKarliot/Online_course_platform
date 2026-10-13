@@ -1,104 +1,456 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gérer un cours</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="../css/style.css" />
-</head>
-<body class="min-h-screen">
-  <div id="navbar"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gérer un cours — CoursEnLigne</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .anim-fade-up { animation: fadeInUp 0.5s ease-out both; }
+      .anim-delay-1 { animation-delay: 0.08s; }
+      .anim-delay-2 { animation-delay: 0.16s; }
+      .anim-delay-3 { animation-delay: 0.24s; }
 
-  <main class="max-w-3xl mx-auto px-6 py-8">
-    <a href="/pages/admin-courses.html" class="text-sm text-indigo-600 hover:underline mb-4 inline-block">
-      <i class="fa-solid fa-arrow-left"></i> Retour aux cours
-    </a>
+      .blob {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.35;
+        pointer-events: none;
+      }
 
-    <div id="chargement" class="flex justify-center py-20"><div class="spinner"></div></div>
+      /* Carte section */
+      .carte-section {
+        background: #fff;
+        border: 1px solid #f1f5f9;
+        border-radius: 1rem;
+        transition: box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+      .carte-section:hover {
+        border-color: #e2e8f0;
+      }
 
-    <div id="contenu" class="hidden">
-      <h1 id="titre-cours" class="text-2xl font-bold text-gray-800 mb-8"></h1>
+      /* Item dans une liste (chapitre, quiz, support) */
+      .item-liste {
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+      }
+      .item-liste:hover {
+        border-color: #c7d2fe;
+        background-color: #fafbff;
+      }
 
-      <!-- ===== CHAPITRES ===== -->
-      <section class="bg-white rounded-xl shadow-sm p-6 mb-6">
-        <h2 class="text-lg font-bold text-gray-800 mb-4"><i class="fa-solid fa-list"></i> Chapitres</h2>
-        <div id="liste-chapitres" class="space-y-2 mb-4"></div>
+      /* Styles par défaut des inputs du formulaire */
+      .input-base {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        color: #1f2937;
+        transition: all 0.2s ease;
+      }
+      .input-base::placeholder { color: #9ca3af; }
+      .input-base:focus {
+        outline: none;
+        background: #fff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div id="navbar"></div>
 
-        <button id="btn-ajouter-chapitre" type="button" class="text-sm text-indigo-600 hover:underline">
-          <i class="fa-solid fa-plus"></i> Ajouter un chapitre
-        </button>
+    <!-- ============================================================= -->
+    <!-- EN-TÊTE DÉGRADÉ                                               -->
+    <!-- ============================================================= -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 text-white">
+      <div class="blob w-80 h-80 bg-violet-400 -top-20 -left-20"></div>
+      <div class="blob w-72 h-72 bg-indigo-300 top-1/2 -right-16"></div>
+      <div class="absolute inset-0 opacity-[0.07]"
+           style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"></div>
 
-        <form id="form-chapitre" class="hidden mt-4 space-y-3 border-t border-gray-100 pt-4">
-          <input type="hidden" id="chapitre-id" />
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Titre</label>
-            <input type="text" id="chapitre-titre" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+      <div class="relative max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <nav class="anim-fade-up flex items-center gap-2 text-xs text-indigo-100/80 mb-4">
+          <a href="/index.html" class="hover:text-white transition-colors">Accueil</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <a href="/pages/admin-courses.html" class="hover:text-white transition-colors">Admin cours</a>
+          <i class="fa-solid fa-chevron-right text-[8px]"></i>
+          <span class="text-white font-medium">Gérer</span>
+        </nav>
+
+        <a
+          href="/pages/admin-courses.html"
+          class="anim-fade-up inline-flex items-center gap-2 text-sm text-indigo-100/90 hover:text-white
+                 bg-white/10 backdrop-blur-sm border border-white/15
+                 px-3.5 py-2 rounded-xl transition-all duration-200 mb-5"
+        >
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          <span>Retour aux cours</span>
+        </a>
+
+        <div class="anim-fade-up anim-delay-1 flex items-start gap-4">
+          <span class="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20
+                       flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-sliders text-xl"></i>
+          </span>
+          <div class="min-w-0">
+            <p class="text-xs font-semibold tracking-widest uppercase text-indigo-100/70 mb-1">
+              Gestion du cours
+            </p>
+            <h1 id="titre-cours" class="text-2xl sm:text-3xl font-bold tracking-tight leading-tight truncate">
+              …
+            </h1>
           </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Ordre</label>
-              <input type="number" id="chapitre-ordre" min="1" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">URL vidéo (optionnel)</label>
-              <input type="url" id="chapitre-video" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-            </div>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Contenu (texte, optionnel)</label>
-            <textarea id="chapitre-contenu" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea>
-          </div>
-          <div class="flex gap-2">
-            <button type="submit" class="flex-1 bg-indigo-600 text-white rounded-lg py-2 text-sm hover:bg-indigo-700">Enregistrer le chapitre</button>
-            <button type="button" id="btn-annuler-chapitre" class="flex-1 bg-gray-100 text-gray-700 rounded-lg py-2 text-sm hover:bg-gray-200">Annuler</button>
-          </div>
-        </form>
-      </section>
+        </div>
+      </div>
 
-      <!-- ===== QUIZ ===== -->
-      <section class="bg-white rounded-xl shadow-sm p-6">
-        <h2 class="text-lg font-bold text-gray-800 mb-4"><i class="fa-solid fa-circle-question"></i> Quiz</h2>
-        <div id="liste-quiz" class="space-y-2 mb-4"></div>
+      <div class="absolute bottom-0 left-0 right-0 leading-none">
+        <svg viewBox="0 0 1440 40" preserveAspectRatio="none" class="w-full h-8 block">
+          <path fill="#f9fafb" d="M0,20 C240,40 480,0 720,15 C960,30 1200,35 1440,20 L1440,40 L0,40 Z"></path>
+        </svg>
+      </div>
+    </section>
 
-        <button id="btn-ajouter-quiz" type="button" class="text-sm text-indigo-600 hover:underline">
-          <i class="fa-solid fa-plus"></i> Ajouter un quiz
-        </button>
+    <!-- ============================================================= -->
+    <!-- CONTENU                                                       -->
+    <!-- ============================================================= -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-12 -mt-6 relative z-10">
 
-        <form id="form-quiz" class="hidden mt-4 space-y-4 border-t border-gray-100 pt-4">
-          <input type="hidden" id="quiz-id" />
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Titre du quiz</label>
-            <input type="text" id="quiz-titre" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Note minimale pour réussir (%)</label>
-            <input type="number" id="quiz-note-min" min="0" max="100" value="50" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+      <!-- Chargement -->
+      <div id="chargement" class="flex flex-col items-center justify-center py-20 gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-white shadow-md flex items-center justify-center">
+          <div class="spinner"></div>
+        </div>
+        <p class="text-sm text-gray-500">Chargement du cours…</p>
+      </div>
+
+      <div id="contenu" class="hidden space-y-6">
+
+        <!-- ============ CHAPITRES ============ -->
+        <section class="anim-fade-up carte-section p-6 sm:p-7">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2.5">
+              <span class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <i class="fa-solid fa-list text-sm"></i>
+              </span>
+              Chapitres
+            </h2>
+            <span id="compteur-chapitres" class="text-xs text-gray-400 font-medium"></span>
           </div>
 
-          <div id="liste-questions" class="space-y-4"></div>
+          <div id="liste-chapitres" class="space-y-2.5 mb-4"></div>
 
-          <button type="button" id="btn-ajouter-question" class="text-sm text-indigo-600 hover:underline">
-            <i class="fa-solid fa-plus"></i> Ajouter une question
+          <!-- Bouton ajouter -->
+          <button
+            id="btn-ajouter-chapitre"
+            type="button"
+            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
+                   text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100
+                   border border-dashed border-indigo-200 hover:border-indigo-300
+                   transition-all duration-200"
+          >
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Ajouter un chapitre</span>
           </button>
 
-          <div class="flex gap-2 pt-2">
-            <button type="submit" class="flex-1 bg-indigo-600 text-white rounded-lg py-2 text-sm hover:bg-indigo-700">Enregistrer le quiz</button>
-            <button type="button" id="btn-annuler-quiz" class="flex-1 bg-gray-100 text-gray-700 rounded-lg py-2 text-sm hover:bg-gray-200">Annuler</button>
-          </div>
-        </form>
-      </section>
-    </div>
-  </main>
+          <!-- Formulaire chapitre -->
+          <form
+            id="form-chapitre"
+            class="hidden mt-4 space-y-4 border-t border-gray-100 pt-5"
+          >
+            <input type="hidden" id="chapitre-id" />
 
-  <script src="/js/api.js"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/navbar.js"></script>
-  <script src="/js/admin-course-manage.js"></script>
-  <script>
-    exigerAdmin();
-    afficherNavbar();
-  </script>
-</body>
+            <div>
+              <label for="chapitre-titre" class="block text-sm font-medium text-gray-700 mb-1.5">
+                Titre
+              </label>
+              <input
+                type="text"
+                id="chapitre-titre"
+                required
+                placeholder="Ex : Introduction aux variables"
+                class="input-base"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="chapitre-ordre" class="block text-sm font-medium text-gray-700 mb-1.5">
+                  Ordre
+                </label>
+                <input
+                  type="number"
+                  id="chapitre-ordre"
+                  min="1"
+                  required
+                  class="input-base"
+                />
+              </div>
+              <div>
+                <label for="chapitre-video" class="block text-sm font-medium text-gray-700 mb-1.5">
+                  URL vidéo <span class="text-gray-400 font-normal">(optionnel)</span>
+                </label>
+                <input
+                  type="url"
+                  id="chapitre-video"
+                  placeholder="https://…"
+                  class="input-base"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="chapitre-contenu" class="block text-sm font-medium text-gray-700 mb-1.5">
+                Contenu <span class="text-gray-400 font-normal">(texte, optionnel)</span>
+              </label>
+              <textarea
+                id="chapitre-contenu"
+                rows="3"
+                placeholder="Résumé ou texte du chapitre…"
+                class="input-base resize-none"
+              ></textarea>
+            </div>
+
+            <div class="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+              <button
+                type="button"
+                id="btn-annuler-chapitre"
+                class="flex-1 py-2.5 rounded-xl text-sm font-medium
+                       text-gray-700 bg-gray-100 hover:bg-gray-200
+                       transition-colors duration-200"
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                class="flex-1 py-2.5 rounded-xl text-sm font-medium text-white
+                       bg-gradient-to-r from-indigo-600 to-violet-600
+                       hover:from-indigo-700 hover:to-violet-700
+                       shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30
+                       transition-all duration-200
+                       inline-flex items-center justify-center gap-2"
+              >
+                <i class="fa-solid fa-check text-xs"></i>
+                <span>Enregistrer</span>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- ============ QUIZ ============ -->
+        <section class="anim-fade-up anim-delay-1 carte-section p-6 sm:p-7">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2.5">
+              <span class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <i class="fa-solid fa-circle-question text-sm"></i>
+              </span>
+              Quiz
+            </h2>
+            <span id="compteur-quiz-admin" class="text-xs text-gray-400 font-medium"></span>
+          </div>
+
+          <div id="liste-quiz" class="space-y-2.5 mb-4"></div>
+
+          <button
+            id="btn-ajouter-quiz"
+            type="button"
+            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
+                   text-sm font-medium text-amber-600 bg-amber-50 hover:bg-amber-100
+                   border border-dashed border-amber-200 hover:border-amber-300
+                   transition-all duration-200"
+          >
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Ajouter un quiz</span>
+          </button>
+
+          <form
+            id="form-quiz"
+            class="hidden mt-4 space-y-4 border-t border-gray-100 pt-5"
+          >
+            <input type="hidden" id="quiz-id" />
+
+            <div>
+              <label for="quiz-titre" class="block text-sm font-medium text-gray-700 mb-1.5">
+                Titre du quiz
+              </label>
+              <input
+                type="text"
+                id="quiz-titre"
+                required
+                placeholder="Ex : Quiz — Les bases"
+                class="input-base"
+              />
+            </div>
+
+            <div>
+              <label for="quiz-note-min" class="block text-sm font-medium text-gray-700 mb-1.5">
+                Note minimale pour réussir (%)
+              </label>
+              <input
+                type="number"
+                id="quiz-note-min"
+                min="0"
+                max="100"
+                value="50"
+                required
+                class="input-base"
+              />
+            </div>
+
+            <!-- Questions -->
+            <div class="pt-2">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <i class="fa-solid fa-list-ol text-gray-400 text-xs"></i>
+                  Questions
+                </span>
+                <span id="compteur-questions" class="text-xs text-gray-400 font-medium"></span>
+              </div>
+
+              <div id="liste-questions" class="space-y-4"></div>
+
+              <button
+                type="button"
+                id="btn-ajouter-question"
+                class="w-full mt-3 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl
+                       text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100
+                       border border-dashed border-indigo-200
+                       transition-colors duration-200"
+              >
+                <i class="fa-solid fa-plus text-[10px]"></i>
+                <span>Ajouter une question</span>
+              </button>
+            </div>
+
+            <div class="flex flex-col-reverse sm:flex-row gap-3 pt-3 border-t border-gray-100">
+              <button
+                type="button"
+                id="btn-annuler-quiz"
+                class="flex-1 py-2.5 rounded-xl text-sm font-medium
+                       text-gray-700 bg-gray-100 hover:bg-gray-200
+                       transition-colors duration-200"
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                class="flex-1 py-2.5 rounded-xl text-sm font-medium text-white
+                       bg-gradient-to-r from-indigo-600 to-violet-600
+                       hover:from-indigo-700 hover:to-violet-700
+                       shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30
+                       transition-all duration-200
+                       inline-flex items-center justify-center gap-2"
+              >
+                <i class="fa-solid fa-check text-xs"></i>
+                <span>Enregistrer le quiz</span>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- ============ SUPPORTS PDF ============ -->
+        <section class="anim-fade-up anim-delay-2 carte-section p-6 sm:p-7">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2.5">
+              <span class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                <i class="fa-solid fa-file-pdf text-sm"></i>
+              </span>
+              Supports PDF
+            </h2>
+            <span id="compteur-supports-admin" class="text-xs text-gray-400 font-medium"></span>
+          </div>
+
+          <div id="liste-supports" class="space-y-2.5 mb-4"></div>
+
+          <form
+            id="form-support"
+            class="space-y-3 border-t border-gray-100 pt-5"
+          >
+            <input
+              type="text"
+              id="support-titre"
+              placeholder="Titre du support (ex : Cours complet)"
+              class="input-base"
+            />
+
+            <label
+              for="support-fichier"
+              class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-dashed border-gray-300
+                     rounded-xl cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/40
+                     transition-all duration-200 group"
+            >
+              <span class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600
+                           flex items-center justify-center flex-shrink-0
+                           group-hover:bg-rose-100 transition-colors">
+                <i class="fa-solid fa-file-pdf text-sm"></i>
+              </span>
+              <div class="flex-1 min-w-0">
+                <p id="support-fichier-label" class="text-sm font-medium text-gray-700 truncate">
+                  Choisir un fichier PDF…
+                </p>
+                <p class="text-xs text-gray-400">PDF uniquement • 10 Mo max</p>
+              </div>
+              <i class="fa-solid fa-upload text-gray-400 group-hover:text-indigo-500 transition-colors"></i>
+
+              <input
+                type="file"
+                id="support-fichier"
+                accept="application/pdf"
+                required
+                class="hidden"
+              />
+            </label>
+
+            <button
+              type="submit"
+              id="btn-support"
+              class="w-full py-2.5 rounded-xl text-sm font-medium text-white
+                     bg-gradient-to-r from-indigo-600 to-violet-600
+                     hover:from-indigo-700 hover:to-violet-700
+                     shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30
+                     transition-all duration-200
+                     inline-flex items-center justify-center gap-2"
+            >
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Téléverser le PDF</span>
+            </button>
+          </form>
+        </section>
+
+      </div>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/admin-course-manage.js"></script>
+    <script>
+      exigerAdmin();
+      afficherNavbar();
+
+      // Affiche le nom du fichier sélectionné
+      document.getElementById('support-fichier')?.addEventListener('change', (e) => {
+        const label = document.getElementById('support-fichier-label');
+        if (e.target.files.length) {
+          label.textContent = e.target.files[0].name;
+          label.classList.add('text-indigo-700');
+        } else {
+          label.textContent = 'Choisir un fichier PDF…';
+          label.classList.remove('text-indigo-700');
+        }
+      });
+    </script>
+  </body>
 </html>
