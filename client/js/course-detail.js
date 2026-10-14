@@ -20,21 +20,21 @@ function afficherSupport(support) {
   `;
 }
 
-function afficherChapitre(chapitre, estTermine) {
+function afficherChapitre(chapitre, estTermine, index) {
   return `
-    <div class="flex items-center justify-between border border-gray-200 rounded-lg p-4">
+    <div data-chapitre-index="${index}"
+         class="flex items-center justify-between border border-gray-200 rounded-lg p-4">
       <div class="flex items-center gap-3">
-        <i class="fa-solid ${estTermine ? "fa-circle-check text-green-500" : "fa-circle text-gray-300"}"></i>
-        <div>
-          <p class="font-medium text-gray-800">${chapitre.ordre}. ${chapitre.titre}</p>
-          ${chapitre.videoUrl ? `<a href="${chapitre.videoUrl}" target="_blank" class="text-xs text-indigo-600 hover:underline"><i class="fa-solid fa-video"></i> Voir la vidéo</a>` : ""}
-          ${chapitre.pdfUrl ? `<a href="${chapitre.pdfUrl}" target="_blank" class="text-xs text-indigo-600 hover:underline ml-3"><i class="fa-solid fa-file-pdf"></i> Support PDF</a>` : ""}
-        </div>
+        <i class="fa-solid ${estTermine ? 'fa-circle-check text-green-500' : 'fa-circle text-gray-300'}"></i>
+        <p class="font-medium text-gray-800">${chapitre.ordre}. ${echapperHtml(chapitre.titre)}</p>
       </div>
       ${
-        inscriptionActuelle && !estTermine
-          ? `<button onclick="terminerChapitre('${chapitre._id}')" class="text-sm bg-gray-100 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg">Marquer terminé</button>`
-          : ""
+        inscriptionActuelle
+          ? `<button onclick="lireChapitre(${index})"
+                class="text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg">
+               <i class="fa-solid fa-play"></i> Lire
+             </button>`
+          : '<i class="fa-solid fa-lock text-gray-300"></i>'
       }
     </div>
   `;
@@ -146,11 +146,13 @@ async function chargerPage() {
 
     // Chapitres
     const chapitresTermines = inscriptionActuelle?.chapitresTermines || [];
-    document.getElementById("liste-chapitres").innerHTML =
+    document.getElementById('liste-chapitres').innerHTML =
       chapitres
-        .map((ch) => afficherChapitre(ch, chapitresTermines.includes(ch._id)))
-        .join("") ||
-      '<p class="text-gray-400 text-sm">Aucun chapitre pour le moment</p>';
+        .map((ch, i) => afficherChapitre(ch, chapitresTermines.includes(ch._id), i))
+        .join('') || '<p class="text-gray-400 text-sm">Aucun chapitre pour le moment</p>';
+
+    // Le lecteur reçoit la liste, l'état d'avancement et la fonction à appeler pour valider un chapitre
+    mettreAJourLecteur(chapitres, chapitresTermines, !!inscriptionActuelle, terminerChapitre);
 
     // Supports PDF (réservés aux inscrits)
     const supports = cours.supports?.length ? cours.supports : [PDF_PAR_DEFAUT];
