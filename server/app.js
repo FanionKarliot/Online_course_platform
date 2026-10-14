@@ -61,6 +61,6 @@ dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 const PORT = process.env.PORT || 3000;
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Serveur sur http://localhost:${PORT}`));
+  app.listen(PORT, () => console.log(`✅ Serveur démarré sur le port ${PORT}`));
   app.use(errorHandler);
 });

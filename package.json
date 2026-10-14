@@ -7,6 +7,9 @@
     "dev": "nodemon server/app.js",
     "start": "node server/app.js"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
